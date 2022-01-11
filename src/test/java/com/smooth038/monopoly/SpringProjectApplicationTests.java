@@ -1,4 +1,4 @@
-package com.smooth038.springproject;
+package com.smooth038.monopoly;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

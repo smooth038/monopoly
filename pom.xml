@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.smooth038</groupId>
-	<artifactId>spring-project</artifactId>
+	<artifactId>monopoly</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-project</name>
-	<description>Full web application frame</description>
+	<name>monopoly</name>
+	<description>A game of Monopoly</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -36,7 +36,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.13.1</version>
+		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
