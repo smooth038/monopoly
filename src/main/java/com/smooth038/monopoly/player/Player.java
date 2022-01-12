@@ -29,12 +29,11 @@ public class Player {
     @Column(columnDefinition = "TINYINT")
     private Token token;
     @Column(columnDefinition = "TINYINT")
-    private final short order;
+    private final short playOrder;
 
     @Column(columnDefinition = "TINYINT")
     private short position = 0;
-    @Column(columnDefinition = "SMALLINT")
-    private short cash = 1500;
+    private int cash = 1500;
 
     private boolean isInJail = false;
     private boolean hasRolled = false;
@@ -44,11 +43,11 @@ public class Player {
     @OneToMany(mappedBy = "getOutOfJailFreeOwner")
     private List<CardDeque> getOutOfJailFreeCards;
 
-    public Player(Game game, short order, String name, Token token) {
+    public Player(Game game, String name, Token token, short playOrder) {
         this.game = game;
-        this.order = order;
         this.name = name;
         this.token = token;
+        this.playOrder = playOrder;
     }
 
     public int getId() {
@@ -59,8 +58,8 @@ public class Player {
         return game;
     }
 
-    public short getOrder() {
-        return order;
+    public short getPlayOrder() {
+        return playOrder;
     }
 
     public boolean isHasRolled() {
@@ -83,7 +82,7 @@ public class Player {
         this.token = token;
     }
 
-    public short getCash() {
+    public int getCash() {
         return cash;
     }
 

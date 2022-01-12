@@ -7,6 +7,8 @@ import com.smooth038.monopoly.propertyregister.PropertyRegister;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table
 public class Game {
     @Id
     @SequenceGenerator(
@@ -28,21 +30,19 @@ public class Game {
     @JoinColumn(name = "register_id", referencedColumnName = "id")
     private PropertyRegister propertyRegister;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "dequeState", column = @Column(name = "chance_deque_state")),
-            @AttributeOverride(name = "getOutOfJailFreeOwner", column = @Column(name = "chance_gojf_owner")),
-    })
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private CardDeque chanceDeque;
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "dequeState", column = @Column(name = "community_deque_state")),
-            @AttributeOverride(name = "getOutOfJailFreeOwner", column = @Column(name = "community_gojf_owner")),
-    })
-    private CardDeque communityChestDeque;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private CardDeque communityDeque;
 
-    @Column(columnDefinition = "SMALLINT")
-    private short jackPot;
+    @Column(columnDefinition = "TINYINT")
+    private short housesLeft = 32;
+    @Column(columnDefinition = "TINYINT")
+    private short hotelsLeft = 12;
+
+    private int jackPot;
 
 
 }

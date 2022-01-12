@@ -7,16 +7,28 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Embeddable
+@Entity
+@Table
 public class CardDeque {
-    @Transient
+    @Id
+    @SequenceGenerator(
+            name = "card_deque_sequence",
+            sequenceName = "card_deque_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "card_deque_sequence"
+    )
+    private int id;
+    @Column(columnDefinition = "BIT")
     private final CardType cardType;
     @Transient
     private Deque<Short> deque;
     private String dequeState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "id")
+    @JoinColumn(name = "gojf_owner_id", referencedColumnName = "id")
     private Player getOutOfJailFreeOwner = null;
 
     public CardDeque(CardType cardType) {

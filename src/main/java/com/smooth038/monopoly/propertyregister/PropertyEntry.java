@@ -17,10 +17,13 @@ public class PropertyEntry {
     )
     private int id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "register_id", referencedColumnName = "id")
     private PropertyRegister propertyRegister;
-
+    @Column(columnDefinition = "TINYINT")
     private short propertyId;
-    private boolean isMortgaged;
+
+    @Column(columnDefinition = "TINYINT")
     private short numberOfHouse;
+
+    private boolean isMortgaged;
 }
