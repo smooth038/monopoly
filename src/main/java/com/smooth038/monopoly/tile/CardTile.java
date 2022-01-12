@@ -1,5 +1,6 @@
 package com.smooth038.monopoly.tile;
 
+import com.smooth038.monopoly.card.CardType;
 import com.smooth038.monopoly.player.Player;
 
 public class CardTile extends Tile {
@@ -18,8 +19,4 @@ public class CardTile extends Tile {
 
     }
 
-    public enum CardType {
-        CHANCE,
-        COMMUNITY_CHEST;
-    }
 }

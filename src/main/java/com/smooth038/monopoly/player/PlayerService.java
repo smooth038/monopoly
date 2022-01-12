@@ -26,7 +26,7 @@ public class PlayerService {
         playerRepository.save(player);
     }
 
-    public void deletePlayer(Integer playerId) {
+    public void deletePlayer(int playerId) {
         if (!playerRepository.existsById(playerId)) {
             throw new IllegalStateException("Player does not exist.");
         }
@@ -34,7 +34,7 @@ public class PlayerService {
     }
 
     @Transactional
-    public void updatePlayer(Integer playerId, String name, Token token) {
+    public void updatePlayer(int playerId, String name, Token token) {
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new IllegalStateException("Player with id " + playerId + " does not exist."));
         if (name != null && name.length() > 0 && !Objects.equals(player.getName(), name)) {

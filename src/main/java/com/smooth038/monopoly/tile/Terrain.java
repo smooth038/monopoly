@@ -2,49 +2,37 @@ package com.smooth038.monopoly.tile;
 
 import com.smooth038.monopoly.player.Player;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 public class Terrain extends Property {
     private final Color color;
-    private final Integer[] baseRent;
-    private final Integer housePrice;
+    private final short[] baseRent;
+    private final short housePrice;
 
-    private Byte numberOfHouses = (byte)(0 & 0xFF);
-
-    public Terrain(Integer price, Color color, Integer[] baseRent, Integer housePrice) {
-        super(price);
+    public Terrain(short id, short price, Color color, short[] baseRent, short housePrice) {
+        super(id, price);
         this.color = color;
         this.baseRent = baseRent;
         this.housePrice = housePrice;
     }
 
-   public Color getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public Integer getHousePrice() {
+    public short getHousePrice() {
         return housePrice;
     }
 
-    public Byte getNumberOfHouses() {
-        return numberOfHouses;
-    }
-
-    public void setNumberOfHouses(Byte numberOfHouses) {
-        this.numberOfHouses = numberOfHouses;
-    }
-
-   @Override
+    @Override
     public void onLand(Player player) {
 
     }
 
     public enum Color {
-        DARK_PURPLE,
-        LIGHT_BLUE,
-        PURPLE,
-        ORANGE,
-        RED,
-        YELLOW,
-        GREEN,
-        BLUE
+        DARK_PURPLE, LIGHT_BLUE, PURPLE, ORANGE, RED, YELLOW, GREEN, BLUE
     }
 }

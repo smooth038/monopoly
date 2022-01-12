@@ -2,32 +2,14 @@ package com.smooth038.monopoly.tile;
 
 import com.smooth038.monopoly.player.Player;
 
+import javax.persistence.*;
+
 public abstract class Property extends Tile {
-    private final Integer price;
-    private Player owner = null;
-    private Boolean isMortgaged = false;
+    private final short id;
+    private final short price;
 
-    public Property(Integer price) {
+    public Property(short id, short price) {
+        this.id = id;
         this.price = price;
-    }
-
-    Player getOwner() {
-        return owner;
-    }
-
-    void setOwner(Player player) {
-        this.owner = player;
-    }
-
-    Boolean isMortgaged() {
-        return isMortgaged;
-    }
-
-    void mortgage() {
-        this.isMortgaged = true;
-    }
-
-    void unmortgage() {
-        this.isMortgaged = false;
     }
 }

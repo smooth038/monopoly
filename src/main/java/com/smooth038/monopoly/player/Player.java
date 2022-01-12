@@ -1,6 +1,10 @@
 package com.smooth038.monopoly.player;
 
+import com.smooth038.monopoly.Game;
+import com.smooth038.monopoly.card.CardDeque;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table
@@ -15,20 +19,52 @@ public class Player {
             strategy = GenerationType.SEQUENCE,
             generator = "player_sequence"
     )
-    private Integer id;
+    private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", referencedColumnName = "id")
+    private final Game game;
+
     private String name;
+    @Column(columnDefinition = "TINYINT")
     private Token token;
+    @Column(columnDefinition = "TINYINT")
+    private final short order;
 
-    private Integer cash = 1500;
-    private Byte position = (byte)(0 & 0xFF);
+    @Column(columnDefinition = "TINYINT")
+    private short position = 0;
+    @Column(columnDefinition = "SMALLINT")
+    private short cash = 1500;
 
-    private Boolean isInJail = false;
-    private Boolean hasRolled = false;
-    private Byte jailTurns = (byte)(0 & 0xFF);
+    private boolean isInJail = false;
+    private boolean hasRolled = false;
+    @Column(columnDefinition = "TINYINT")
+    private short jailTurns = 0;
 
-    public Player(String name, Token token) {
+    @OneToMany(mappedBy = "getOutOfJailFreeOwner")
+    private List<CardDeque> getOutOfJailFreeCards;
+
+    public Player(Game game, short order, String name, Token token) {
+        this.game = game;
+        this.order = order;
         this.name = name;
         this.token = token;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public short getOrder() {
+        return order;
+    }
+
+    public boolean isHasRolled() {
+        return hasRolled;
     }
 
     public String getName() {
@@ -47,43 +83,43 @@ public class Player {
         this.token = token;
     }
 
-    public Integer getCash() {
+    public short getCash() {
         return cash;
     }
 
-    public void setCash(Integer cash) {
+    public void setCash(short cash) {
         this.cash = cash;
     }
 
-    public Byte getPosition() {
+    public short getPosition() {
         return position;
     }
 
-    public void setPosition(Byte position) {
+    public void setPosition(short position) {
         this.position = position;
     }
 
-    public Boolean isInJail() {
+    public boolean isInJail() {
         return isInJail;
     }
 
-    public void setIsInJail(Boolean isInJail) {
+    public void setIsInJail(boolean isInJail) {
         this.isInJail = isInJail;
     }
 
-    public Boolean getHasRolled() {
+    public boolean hasRolled() {
         return hasRolled;
     }
 
-    public void setHasRolled(Boolean hasRolled) {
+    public void setHasRolled(boolean hasRolled) {
         this.hasRolled = hasRolled;
     }
 
-    public Byte getJailTurns() {
+    public short getJailTurns() {
         return jailTurns;
     }
 
-    public void setJailTurns(Byte jailTurns) {
+    public void setJailTurns(short jailTurns) {
         this.jailTurns = jailTurns;
     }
 }

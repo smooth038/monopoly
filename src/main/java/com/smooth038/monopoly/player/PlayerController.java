@@ -27,12 +27,12 @@ public class PlayerController {
     }
 
     @DeleteMapping(path = "{playerId}")
-    public void deletePlayer(@PathVariable("playerId") Integer playerId) {
+    public void deletePlayer(@PathVariable("playerId") int playerId) {
         playerService.deletePlayer(playerId);
     }
 
     @PutMapping(path = "{playerId}")
-    public void updatePlayer(@PathVariable("playerId") Integer playerId, @RequestParam(required = false) String name,
+    public void updatePlayer(@PathVariable("playerId") int playerId, @RequestParam(required = false) String name,
                            @RequestParam(required = false) Token token) {
         playerService.updatePlayer(playerId, name, token);
     }
