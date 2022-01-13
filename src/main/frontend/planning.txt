@@ -1,0 +1,26 @@
+Comment générer les données statiques au back-end?
+    Propriétés
+        - On a besoin d'un objet contenant toutes les propriétés avec leurs champs pour référence
+        - Écriture d'un fichier JSON que l'on chargera en mémoire au début
+        - Créer un objet qui ira fetcher l'info et la rendra disponible
+        
+    Cartes
+        - On a besoin d'un objet similaire contenant toutes les actions (méthodes) pour chaque carte
+        - Créer un objet CardExecutor qui exécutera les tâches provenant des cartes
+
+Comment le back end informera le front de ce qui se passe?
+    On pourrait envoyer au front end une liste d'événements qu'il devra afficher à l'utilisateur. Un exemple pourrait être.
+    "Event": {
+        "Type": DICE_ROLL,
+        "Data": [
+            4,
+            3
+        ]
+    }
+    
+    Les Event.Type provenant du back end pourraient être les suivants:
+        DICE_ROLL,
+        DRAW_CARD,
+        ...
+
+    Ces Events seraient retournés par les appels back end associés

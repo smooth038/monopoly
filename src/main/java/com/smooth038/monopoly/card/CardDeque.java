@@ -1,11 +1,9 @@
 package com.smooth038.monopoly.card;
 
-import com.smooth038.monopoly.Game;
 import com.smooth038.monopoly.player.Player;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table

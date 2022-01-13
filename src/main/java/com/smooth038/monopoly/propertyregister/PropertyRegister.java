@@ -1,6 +1,6 @@
 package com.smooth038.monopoly.propertyregister;
 
-import com.smooth038.monopoly.Game;
+import com.smooth038.monopoly.game.Game;
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.smooth038.monopoly.player;
 
-import com.smooth038.monopoly.Game;
+import com.smooth038.monopoly.game.Game;
 import com.smooth038.monopoly.card.CardDeque;
 
 import javax.persistence.*;

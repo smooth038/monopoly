@@ -1,8 +1,9 @@
-package com.smooth038.monopoly;
+package com.smooth038.monopoly.game;
 
 import com.smooth038.monopoly.card.CardDeque;
 import com.smooth038.monopoly.player.Player;
 import com.smooth038.monopoly.propertyregister.PropertyRegister;
+import com.smooth038.monopoly.user.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,10 +22,19 @@ public class Game {
             generator = "game_sequence"
     )
     private int id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
+    private User creator;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
     private List<Player> players;
+
+    @Column(columnDefinition = "TINYINT")
+    private GameState state;
+
     @Column(columnDefinition = "TINYINT")
     private short playerTurn;
+    @Column(columnDefinition = "TINYINT")
+    private short doubleDice;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "register_id", referencedColumnName = "id")
