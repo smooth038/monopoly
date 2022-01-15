@@ -19,8 +19,37 @@ Comment le back end informera le front de ce qui se passe?
     }
     
     Les Event.Type provenant du back end pourraient être les suivants:
-        DICE_ROLL,
-        DRAW_CARD,
-        ...
+        PLACE_TOKEN,    - pour placer un/des pions arbitrairement
+        DICE_ROLL,      - pour donner la valeur des deux dés
+        ADVANCE,        - pour dire d'avancer (ou reculer) d'un nombre de cases
+        DRAW_CARD,      - pour dire d'afficher une carte
+        ADJUST_MONEY,   - pour ajouter/enlever de l'argent dans le compte de joueurs
+        BUY_OR_AUCTION, - pour indiquer de demander au joueur quoi faire en aterissant sur une propriété non vendue
+        GO_TO_JAIL,     - pour dire d'aller directement en prison
+        IN_JAIL,        - pour dire que le joueur est en prison et doit prendre une action
+        DEBT,           - pour dire que le joueur doit payer ses dettes
+        BANKRUPTCY,     - pour dire que le joueur doit demander secours ou perdre la partie
+        GAME_END,       - pour dire que la partie est terminée et déclarer le gagnant
 
-    Ces Events seraient retournés par les appels back end associés
+    Ces Events seraient retournés par les appels back end. 
+    
+    Le back end devrait lui-même avoir des états où il attend certaines actions du front, et ne répondra qu'aux appels pertinents.
+    Ces états pourraient être
+        GAME_BEGIN      - la partie vient de commencer, le premier joueur n'a pas encore brassé les dés (p-e inutile?)
+        TURN_BEGIN      - le tour du joueur commence, il n'a pas encore brassé les dés. 
+        TURN_END        - le tour du joueur est terminé, on attend que le prochain joueur brasse les dés ou que n'importe quel joueur 
+                          fasse une action (hypothéquer, construire une maison, échanger, etc.)
+        BUY_OR_AUCTION  - un joueur vient d'aterrir sur une propriété n'appartenant à personne et doit choisir entre l'acheter ou la
+                         mettre aux enchères. (on pourrait mettre une option pour désactiver la mise aux enchères)
+        AUCTION         - une mise aux enchères est en cours
+        DEBT            - un joueur doit payer et son compte de banque devient négatif, mais il possède assez d'actifs pour tout
+                          rembourser lui-même. Le jeu ne peux continuer tant que la situation n'est pas réglée. Les échanges sont permis.
+        BANKRUPTCY      - un joueur tombe en dettes et n'a plus suffisamment d'actifs pour tout rembourser. Il peut faire des échanges
+                          ou perdre la partie
+        GAME_END        - il ne reste qu'un seul joueur encore vivant. Le jeu est terminé.
+    Il faut également garder le compte de :
+        - le nombre de doubles obtenus par le joueur courant
+
+    Il faudrait gérer des utilisateurs. Mais je vais garder ça au plus simple pour commencer, et ne pas mettre d'authentification 
+    du tout, et simplement ouvrir la dernière partie non terminée s'il y en a une. Ou encore donner le choix entre ouvrir une partie
+    en cours ou en commencer une nouvelle.

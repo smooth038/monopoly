@@ -1,20 +1,41 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Board } from './Board';
-import { LeftPanel } from './LeftPanel';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Board } from "./Board";
+import { LeftPanel } from "./LeftPanel";
 
 export const Layout = () => {
-    return(
-        <StyledLayout>
-            <LeftPanel />
-            <Board /> 
-        </StyledLayout>
-    );
-}
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const footerHeight = 0;
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowHeight(window.innerHeight);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <StyledLayout>
+      <div className="main">
+        <LeftPanel frameHeight={windowHeight - footerHeight} />
+
+        <span />
+        <Board frameHeight={windowHeight - footerHeight} />
+      </div>
+    </StyledLayout>
+  );
+};
 
 const StyledLayout = styled.div`
+  margin: 0;
+  padding: 0;
+  .main {
     display: flex;
-    * {
-        margin: 0px 20px; 
+    span {
+      width: 20px;
     }
-`
+  }
+`;

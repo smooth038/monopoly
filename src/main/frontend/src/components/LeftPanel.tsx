@@ -1,21 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const LeftPanel = () => {
+export interface LeftPanelProps {
+    frameHeight: number;
+}
+
+export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
     return(
-        <StyledLeftPanel>
-            <h2>Welcome </h2> 
+        <StyledLeftPanel frameHeight={props.frameHeight}>
+            <h2>Welcome to Monopoly!</h2> 
         </StyledLeftPanel>
     )
 }
 
-const StyledLeftPanel = styled.div`
-    background-color: #222;
-    border: 1px solid black;
+const StyledLeftPanel = styled.div<{frameHeight: number}>`
+    box-sizing: border-box;
+    background-color: #2223;
+    border: 3px solid #0008;
     border-radius: 10px;
-    filter: drop-shadow(3px 2px 1px #000);
-    padding: 20px;
+    filter: drop-shadow(3px 2px 2px #000);
+    padding: 0px 20px;
     min-width: 400px;
-    opacity: 0.7;
+    height: ${(props) => (0.95 * props.frameHeight).toString() + "px"};
     color: white;
+    background-image: linear-gradient(-210deg, #fff4, #fff0);
+
+    @keyframes fromLeft {
+        0% {left: -100vw;}
+        100% {left: 0px;}
+    }
+
+    position: relative;
+    left: 0;
+    animation-name: fromLeft;
+    animation-duration: 0.8s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
 `
