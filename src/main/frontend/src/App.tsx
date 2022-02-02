@@ -1,9 +1,9 @@
 import React from 'react';
-import { Layout } from './components/Layout';
+import { Controller } from './components/Controller';
 
 function App() {
   return (
-    <Layout />
+    <Controller />
   );
 }
 

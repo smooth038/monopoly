@@ -27,3 +27,8 @@ body,
   justify-content: center;
   align-items: center;
 }
+
+input,
+button {
+  border-radius: 5px !important;
+}

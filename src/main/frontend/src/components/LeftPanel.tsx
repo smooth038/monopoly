@@ -9,6 +9,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
     return(
         <StyledLeftPanel frameHeight={props.frameHeight}>
             <h2>Welcome to Monopoly!</h2> 
+            <button>Start new game</button>
         </StyledLeftPanel>
     )
 }

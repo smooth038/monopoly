@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Board } from "./Board";
-import { LeftPanel } from "./LeftPanel";
+import { Board } from "components/Board";
+import { LeftPanel } from "components/LeftPanel";
+import { NewGameModal } from "components/NewGameModal";
 
-export const Layout = () => {
+export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const footerHeight = 0;
+  const [isNewGameModalVisible, setNewGameModalVisible] = useState(true);
+  const [isMainVisible, setMainVisible] = useState(false);
 
   useEffect(() => {
     function handleResize() {
@@ -19,12 +22,14 @@ export const Layout = () => {
 
   return (
     <StyledLayout>
-      <div className="main">
-        <LeftPanel frameHeight={windowHeight - footerHeight} />
-
-        <span />
-        <Board frameHeight={windowHeight - footerHeight} />
-      </div>
+      {isNewGameModalVisible && <NewGameModal />}
+      {isMainVisible && (
+        <div className="main">
+          <LeftPanel frameHeight={windowHeight - footerHeight} />
+          <span />
+          <Board frameHeight={windowHeight - footerHeight} />
+        </div>
+      )}
     </StyledLayout>
   );
 };
