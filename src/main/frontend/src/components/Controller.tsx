@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Board } from "components/Board";
 import { LeftPanel } from "components/LeftPanel";
 import { NewGameModal } from "components/NewGameModal";
+import { Token } from "helpers/token";
 
 export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -20,9 +21,17 @@ export const Controller = () => {
     };
   }, []);
 
+  const handleNewGameStart = (
+    players: Array<{ name: string; token: Token }>
+  ) => {
+    alert("Game ready to start!");
+    setNewGameModalVisible(false);
+    return;
+  };
+
   return (
     <StyledLayout>
-      {isNewGameModalVisible && <NewGameModal />}
+      {isNewGameModalVisible && <NewGameModal onStart={handleNewGameStart} />}
       {isMainVisible && (
         <div className="main">
           <LeftPanel frameHeight={windowHeight - footerHeight} />

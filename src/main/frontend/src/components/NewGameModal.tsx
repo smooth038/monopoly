@@ -1,53 +1,21 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import bootTokenImg from "assets/tokens/250x250/boot.png";
-import carTokenImg from "assets/tokens/250x250/car.png";
-import catTokenImg from "assets/tokens/250x250/cat.png";
-import dogTokenImg from "assets/tokens/250x250/dog.png";
-import duckTokenImg from "assets/tokens/250x250/duck.png";
-import hatTokenImg from "assets/tokens/250x250/hat.png";
-import ironTokenImg from "assets/tokens/250x250/iron.png";
-import penguinTokenImg from "assets/tokens/250x250/penguin.png";
-import shipTokenImg from "assets/tokens/250x250/ship.png";
-import thimbleTokenImg from "assets/tokens/250x250/thimble.png";
-import t_rexTokenImg from "assets/tokens/250x250/t_rex.png";
+import { Token, tokenImages } from "helpers/token";
 
-export enum Tokens {
-  BOOT = "boot",
-  CAR = "car",
-  CAT = "cat",
-  DOG = "dog",
-  DUCK = "duck",
-  HAT = "hat",
-  IRON = "iron",
-  PENGUIN = "penguin",
-  SHIP = "ship",
-  THIMBLE = "thimble",
-  T_REX = "t_rex",
+export interface NewGameModalProps {
+  onStart: (players: Array<{ name: string; token: Token }>) => void;
 }
 
-const tokenImages = new Map([
-  [Tokens.BOOT, bootTokenImg],
-  [Tokens.CAR, carTokenImg],
-  [Tokens.CAT, catTokenImg],
-  [Tokens.DOG, dogTokenImg],
-  [Tokens.DUCK, duckTokenImg],
-  [Tokens.HAT, hatTokenImg],
-  [Tokens.IRON, ironTokenImg],
-  [Tokens.PENGUIN, penguinTokenImg],
-  [Tokens.SHIP, shipTokenImg],
-  [Tokens.THIMBLE, thimbleTokenImg],
-  [Tokens.T_REX, t_rexTokenImg],
-]);
-
-export const NewGameModal = () => {
+export const NewGameModal: React.FC<NewGameModalProps> = (
+  props: NewGameModalProps
+) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(2);
-  const [players, setPlayers] = useState<
-    Array<{ name: string; token: Tokens }>
-  >([
-    { name: "", token: Tokens.BOOT },
-    { name: "", token: Tokens.CAR },
-  ]);
+  const [players, setPlayers] = useState<Array<{ name: string; token: Token }>>(
+    [
+      { name: "", token: Token.BOOT },
+      { name: "", token: Token.CAR },
+    ]
+  );
 
   const handleNumberOfPlayersChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -64,15 +32,15 @@ export const NewGameModal = () => {
         const newPlayers = [...players];
         if (newNumberOfPlayers > numberOfPlayers) {
           const numberOfPlayersToAdd = newNumberOfPlayers - numberOfPlayers;
-          for (let i = 1; i <= numberOfPlayersToAdd; i++) {
+          for (let i = 0; i < numberOfPlayersToAdd; i++) {
             newPlayers.push({
               name: "",
-              token: Object.values(Tokens)[i + numberOfPlayers],
+              token: Object.values(Token)[i + numberOfPlayers],
             });
           }
         } else if (newNumberOfPlayers < numberOfPlayers) {
           const numberOfPlayersToRemove = numberOfPlayers - newNumberOfPlayers;
-          for (let i = 1; i <= numberOfPlayersToRemove; i++) {
+          for (let i = 0; i < numberOfPlayersToRemove; i++) {
             newPlayers.pop();
           }
         }
@@ -93,14 +61,34 @@ export const NewGameModal = () => {
 
   const handlePlayerTokenChange = (playerIndex: number, tokenIndex: number) => {
     const newPlayers = [...players];
-    newPlayers[playerIndex].token = Object.values(Tokens)[tokenIndex];
+    newPlayers[playerIndex].token = Object.values(Token)[tokenIndex];
     setPlayers(newPlayers);
   };
 
   const handleNewGameButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    alert(players);
+    const playerNames: string[] = [];
+    const playerTokens: Token[] = [];
+    for (let i = 0; i < numberOfPlayers; i++) {
+      if (!players[i].name) {
+        alert("One or more names are empty");
+        return;
+      }
+      if (playerNames.includes(players[i].name)) {
+        alert("Two or more names are duplicate");
+        return;
+      } else {
+        playerNames.push(players[i].name);
+      }
+      if (playerTokens.includes(players[i].token)) {
+        alert("Two ore more tokens are duplicate");
+        return;
+      } else {
+        playerTokens.push(players[i].token);
+      }
+    }
+    props.onStart(players);
   };
 
   return (
@@ -126,13 +114,14 @@ export const NewGameModal = () => {
                 <StyledPlayerName>
                   <input
                     type="text"
+                    placeholder="Enter player name..."
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       handlePlayerNameChange(event, playerIndex)
                     }
                   />
                 </StyledPlayerName>
-                <StyledPlayerToken>
-                  {Object.values(Tokens).map((token, tokenIndex) => (
+                <StyledTokenSelector>
+                  {Object.values(Token).map((token, tokenIndex) => (
                     <span
                       key={playerIndex.toString() + "-" + tokenIndex.toString()}
                     >
@@ -160,7 +149,7 @@ export const NewGameModal = () => {
                       </label>
                     </span>
                   ))}
-                </StyledPlayerToken>
+                </StyledTokenSelector>
               </StyledInline>
             </StyledPlayerEntry>
           </StyledRow>
@@ -189,14 +178,13 @@ const StyledNewGameModal = styled.div`
   color: white;
   background-image: linear-gradient(-210deg, #fff4, #fff0);
 
-  @keyframes fromLeft {
+  @keyframes appear {
     from {
-      left: -100vw;
-      opacity: 0;
+      transform: translateX(-50%) scale(0);
     }
   }
 
-  animation: fromLeft 0.8s ease 1;
+  animation: appear 0.5s ease-out forwards;
   counter-reset: playerNumber;
 `;
 
@@ -205,14 +193,17 @@ const StyledRow = styled.div`
 `;
 
 const StyledNumberOfPlayers = styled.div`
+  font-size: 18px;
   input {
     height: 1.5em;
     width: 3em;
+    font-size: 18px;
   }
 `;
 const StyledPlayerEntry = styled.div`
   display: flex;
   ::before {
+    width: 1em;
     counter-increment: playerNumber;
     content: counter(playerNumber) ")";
     padding-right: 0.5em;
@@ -234,10 +225,11 @@ const StyledPlayerName = styled.div`
   input {
     flex-grow: 1;
     height: 1.5em;
+    font-size: 18px;
   }
 `;
 
-const StyledPlayerToken = styled.div`
+const StyledTokenSelector = styled.div`
   margin-left: 8px;
   white-space: nowrap;
   input[type="radio"] {
