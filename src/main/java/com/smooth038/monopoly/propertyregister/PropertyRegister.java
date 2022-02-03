@@ -3,6 +3,7 @@ package com.smooth038.monopoly.propertyregister;
 import com.smooth038.monopoly.game.Game;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,10 +21,14 @@ public class PropertyRegister {
     )
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY )
-    @JoinColumn(name = "game_id")
-    private Game game;
+//    @OneToOne(fetch = FetchType.LAZY )
+//    @JoinColumn(name = "game_id")
+//    private Game game;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "propertyRegister")
     private List<PropertyEntry> propertyEntries;
+
+    public PropertyRegister() {
+        this.propertyEntries = new ArrayList<>();
+    }
 }

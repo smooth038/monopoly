@@ -23,8 +23,8 @@ public class User {
     private final String email;
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
-    private List<Game> games;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
+//    private List<Game> games;
 
     public User(String email, String name) {
         this.email = email;

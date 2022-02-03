@@ -19,7 +19,8 @@ public class CardDeque {
             generator = "card_deque_sequence"
     )
     private int id;
-    @Column(columnDefinition = "BIT")
+    @Column(columnDefinition = "enum('CHANCE','COMMUNITY_CHEST')")
+    @Enumerated(EnumType.STRING)
     private final CardType cardType;
     @Transient
     private Deque<Short> deque;
@@ -32,6 +33,7 @@ public class CardDeque {
     public CardDeque(CardType cardType) {
         this.cardType = cardType;
         this.deque = new LinkedList<>();
+        this.dequeState = "";
         randomizeCards();
     }
 

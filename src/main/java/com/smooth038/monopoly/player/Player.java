@@ -26,11 +26,10 @@ public class Player {
     private final Game game;
 
     private String name;
-    @Column(columnDefinition = "TINYINT")
+    @Column(columnDefinition = "enum('BOOT','CAR', 'CAT', 'DOG', 'DUCK', 'HAT', 'IRON', 'PENGUIN', 'SHIP', 'THIMBLE'," +
+            " 'T_REX')")
+    @Enumerated(EnumType.STRING)
     private Token token;
-    @Column(columnDefinition = "TINYINT")
-    private final short playOrder;
-
     @Column(columnDefinition = "TINYINT")
     private short position = 0;
     private int cash = 1500;
@@ -43,11 +42,10 @@ public class Player {
     @OneToMany(mappedBy = "getOutOfJailFreeOwner")
     private List<CardDeque> getOutOfJailFreeCards;
 
-    public Player(Game game, String name, Token token, short playOrder) {
+    public Player(Game game, String name, Token token) {
         this.game = game;
         this.name = name;
         this.token = token;
-        this.playOrder = playOrder;
     }
 
     public int getId() {
@@ -56,14 +54,6 @@ public class Player {
 
     public Game getGame() {
         return game;
-    }
-
-    public short getPlayOrder() {
-        return playOrder;
-    }
-
-    public boolean isHasRolled() {
-        return hasRolled;
     }
 
     public String getName() {

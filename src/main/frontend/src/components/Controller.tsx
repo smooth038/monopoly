@@ -4,6 +4,7 @@ import { Board } from "components/Board";
 import { LeftPanel } from "components/LeftPanel";
 import { NewGameModal } from "components/NewGameModal";
 import { Token } from "helpers/token";
+import axios from "axios";
 
 export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);

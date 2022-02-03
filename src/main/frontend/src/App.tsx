@@ -1,10 +1,9 @@
-import React from 'react';
-import { Controller } from './components/Controller';
+import React from "react";
+import axios from "axios";
+import { Controller } from "./components/Controller";
 
 function App() {
-  return (
-    <Controller />
-  );
+  return <Controller />;
 }
 
 export default App;

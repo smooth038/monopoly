@@ -1,12 +1,15 @@
 package com.smooth038.monopoly.player;
 
 public enum Token {
-    BATTLESHIP,
-    IRON,
+    BOOT,
     CAR,
+    CAT,
     DOG,
-    SHOE,
-    THIMBLE,
+    DUCK,
     HAT,
-    WHEELBARROW,
+    IRON,
+    PENGUIN,
+    SHIP,
+    THIMBLE,
+    T_REX,
 }
