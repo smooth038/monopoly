@@ -1,6 +1,6 @@
 package com.smooth038.monopoly.game;
 
-public enum GameState {
+public enum GameStep {
     GAME_BEGIN,
     TURN_BEGIN,
     RE_ROLL,

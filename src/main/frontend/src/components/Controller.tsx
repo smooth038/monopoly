@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+
 import { Board } from "components/Board";
 import { LeftPanel } from "components/LeftPanel";
 import { NewGameModal } from "components/NewGameModal";
-import { Token } from "helpers/token";
-import axios from "axios";
+import { PlayerInfo } from "models/player";
+import { gameService } from "service/gameService";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
 
 export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const footerHeight = 0;
   const [isNewGameModalVisible, setNewGameModalVisible] = useState(true);
   const [isMainVisible, setMainVisible] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     function handleResize() {
@@ -22,12 +25,10 @@ export const Controller = () => {
     };
   }, []);
 
-  const handleNewGameStart = (
-    players: Array<{ name: string; token: Token }>
-  ) => {
-    alert("Game ready to start!");
+  const handleNewGameStart = (players: PlayerInfo[]) => {
     setNewGameModalVisible(false);
-    return;
+    setMainVisible(true);
+    gameService.startNewGame(players, dispatch);
   };
 
   return (

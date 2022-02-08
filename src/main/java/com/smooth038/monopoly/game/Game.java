@@ -3,13 +3,9 @@ package com.smooth038.monopoly.game;
 import com.smooth038.monopoly.card.CardDeque;
 import com.smooth038.monopoly.card.CardType;
 import com.smooth038.monopoly.player.Player;
-import com.smooth038.monopoly.player.Token;
 import com.smooth038.monopoly.propertyregister.PropertyRegister;
-import com.smooth038.monopoly.user.User;
-import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,7 +30,7 @@ public class Game {
     private List<Player> players;
 
     @Column(columnDefinition = "TINYINT")
-    private GameState state = GameState.GAME_BEGIN;
+    private GameStep state = GameStep.GAME_BEGIN;
 
     @Column(columnDefinition = "TINYINT")
     private short playerTurn = 0;
@@ -77,7 +73,7 @@ public class Game {
         this.players = players;
     }
 
-    public GameState getState() {
+    public GameStep getState() {
         return state;
     }
 

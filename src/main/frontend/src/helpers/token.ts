@@ -7,20 +7,20 @@ import hatTokenImg from "assets/tokens/250x250/hat.png";
 import ironTokenImg from "assets/tokens/250x250/iron.png";
 import penguinTokenImg from "assets/tokens/250x250/penguin.png";
 import shipTokenImg from "assets/tokens/250x250/ship.png";
-import thimbleTokenImg from "assets/tokens/250x250/thimble.png";
 import tRexTokenImg from "assets/tokens/250x250/t_rex.png";
+import thimbleTokenImg from "assets/tokens/250x250/thimble.png";
 
 export enum Token {
   BOOT = "boot",
   CAR = "car",
-  CAT = "cat",
   DOG = "dog",
-  DUCK = "duck",
   HAT = "hat",
   IRON = "iron",
-  PENGUIN = "penguin",
   SHIP = "ship",
   THIMBLE = "thimble",
+  CAT = "cat",
+  DUCK = "duck",
+  PENGUIN = "penguin",
   T_REX = "t-rex",
 }
 

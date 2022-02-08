@@ -1,3 +1,18 @@
+@font-face {
+  font-family: "kabel-medium";
+  src: url(assets/fonts/kabel-medium.ttf);
+}
+
+@font-face {
+  font-family: "kabel-bold";
+  src: url(assets/fonts/kabel-bold.ttf);
+}
+
+@font-face {
+  font-family: "kabel-book";
+  src: url(assets/fonts/kabel-book.otf);
+}
+
 body {
   background-image: url("assets/wood.jpg");
   background-size: cover;
@@ -9,26 +24,53 @@ body {
   overflow: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
 html,
 body,
 #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-size: 18px;
 }
 
 #root {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "kabel-book";
 }
 
 input,
 button {
   border-radius: 5px !important;
+  font-family: inherit;
+}
+
+button {
+  font-variant: small-caps;
+  font-size: 1.25rem;
+  padding: 0.25em 2em;
+  background-color: transparent;
+  border: 3px solid white;
+  box-shadow: 0 0 0.5em 0 white, inset 0 0 0.5em 0 white;
+  color: white;
+}
+
+button:hover {
+  background-color: #4c48;
+  text-shadow: 0px 0px 3px white;
+}
+button:active {
+  background-color: #4c4;
+  text-shadow: 0px 0px 3px white;
+}
+
+input {
+  padding-top: 0.2em;
+  padding-left: 0.5em;
+}
+
+h1 {
+  font-family: "kabel-bold";
+  font-variant: small-caps;
 }

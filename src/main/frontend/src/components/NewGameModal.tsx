@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { Token, tokenImages } from "helpers/token";
 
+import { PlayerInfo } from "models/player";
+import styled from "styled-components";
+
 export interface NewGameModalProps {
-  onStart: (players: Array<{ name: string; token: Token }>) => void;
+  onStart: (players: PlayerInfo[]) => void;
 }
 
 export const NewGameModal: React.FC<NewGameModalProps> = (
@@ -71,6 +73,10 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
     const playerNames: string[] = [];
     const playerTokens: Token[] = [];
     for (let i = 0; i < numberOfPlayers; i++) {
+      if (players[i].name.length > 25) {
+        alert("One name is too long (over 25 characters)");
+        return;
+      }
       if (!players[i].name) {
         alert("One or more names are empty");
         return;
@@ -88,7 +94,14 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
         playerTokens.push(players[i].token);
       }
     }
-    props.onStart(players);
+    const newPlayers: PlayerInfo[] = [];
+    for (const player of players) {
+      newPlayers.push({
+        name: player.name,
+        token: Object.values(Token).indexOf(player.token),
+      });
+    }
+    props.onStart(newPlayers);
   };
 
   return (
@@ -107,7 +120,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
             </label>
           </StyledNumberOfPlayers>
         </StyledRow>
-        {Array.from({ length: numberOfPlayers }).map((player, playerIndex) => (
+        {Array.from({ length: numberOfPlayers }).map((_, playerIndex) => (
           <StyledRow key={playerIndex}>
             <StyledPlayerEntry>
               <StyledInline>
@@ -122,7 +135,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                 </StyledPlayerName>
                 <StyledTokenSelector>
                   {Object.values(Token).map((token, tokenIndex) => (
-                    <span
+                    <div
                       key={playerIndex.toString() + "-" + tokenIndex.toString()}
                     >
                       <input
@@ -147,7 +160,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                       >
                         <img src={tokenImages.get(token)} alt={token} />
                       </label>
-                    </span>
+                    </div>
                   ))}
                 </StyledTokenSelector>
               </StyledInline>
@@ -184,12 +197,16 @@ const StyledNewGameModal = styled.div`
     }
   }
 
-  animation: appear 0.5s ease-out forwards;
+  transition: appear 0.5s ease-out forwards;
   counter-reset: playerNumber;
+
+  h1 {
+    text-align: center;
+  }
 `;
 
 const StyledRow = styled.div`
-  padding: 15px 0px;
+  padding: 10px 0px;
 `;
 
 const StyledNumberOfPlayers = styled.div`
@@ -230,6 +247,7 @@ const StyledPlayerName = styled.div`
 `;
 
 const StyledTokenSelector = styled.div`
+  display: flex;
   margin-left: 8px;
   white-space: nowrap;
   input[type="radio"] {
@@ -238,9 +256,10 @@ const StyledTokenSelector = styled.div`
     width: 0;
   }
   label {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     margin: 0px 2px;
-    padding: 0px 3px;
+    padding: 5px 5px;
     font-size: 16px;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -250,7 +269,7 @@ const StyledTokenSelector = styled.div`
     box-shadow: 0 0 0.5em 0 #4c4, inset 0 0 0.5em 0 #4c4;
   }
   label:hover {
-    background-color: #dfd3;
+    background-color: #4c43;
   }
   img {
     width: 2.5em;
@@ -262,18 +281,4 @@ const StyledFormButtons = styled.div`
   display: flex;
   justify-content: center;
   padding: 15px 0px;
-  button {
-    font-size: 18px;
-    padding: 8px 32px;
-    background-color: transparent;
-    border: 2px solid white;
-    box-shadow: 0 0 0.5em 0 white, inset 0 0 0.5em 0 white;
-    color: white;
-    :hover {
-      background-color: #dfd3;
-    }
-    :active {
-      background-color: #4c4;
-    }
-  }
 `;

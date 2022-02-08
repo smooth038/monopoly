@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "api/game")
 public class GameController {
@@ -23,8 +24,8 @@ public class GameController {
     }
 
     @PostMapping
-    public void startNewGame(@RequestBody List<PlayerInfo> players) {
-       gameService.startNewGame(players);
+    public List<PlayerInfo> startNewGame(@RequestBody List<PlayerInfo> players) {
+       return gameService.startNewGame(players);
     }
 
     @DeleteMapping(path = "{gameId}")

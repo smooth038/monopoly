@@ -1,11 +1,6 @@
-import { Player } from "./player";
 
-export interface Game {
-  players: Player[],
-  
-}
-
-export enum GameState {
+export enum GameStep {
+  NO_GAME,
   GAME_BEGIN,
   TURN_BEGIN,
   RE_ROLL,

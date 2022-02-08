@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -25,7 +26,7 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public void startNewGame(List<PlayerInfo> playerInfos) {
+    public List<PlayerInfo> startNewGame(List<PlayerInfo> playerInfos) {
         Game game = new Game();
         gameRepository.save(game);
         List<Player> players = new ArrayList<>();
@@ -35,6 +36,8 @@ public class GameService {
             players.add(p);
         }
         addPlayersToGame(game.getId(), players);
+        return players.stream().map((player) -> new PlayerInfo(player.getName(), player.getToken().ordinal())).collect(
+                Collectors.toList());
     }
 
     public void deleteGame(int gameId) {

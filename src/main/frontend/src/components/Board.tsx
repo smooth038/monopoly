@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import boardImage from "assets/board-high-res.jpg";
+import styled from "styled-components";
 
 export interface BoardProps {
   frameHeight: number;
@@ -36,12 +36,19 @@ const StyledBoard = styled.div<{ frameHeight: number }>`
     }
   }
 
+  @keyframes rotate {
+    to {
+      transform: rotateZ(90deg);
+    }
+  }
+
   position: relative;
   left: 0px;
   animation-name: fromRight;
   animation-duration: 0.8s;
   animation-timing-function: ease;
   animation-iteration-count: 1;
+  /* animation: rotate 1s ease forwards; */
 
   .lighting {
     position: absolute;
