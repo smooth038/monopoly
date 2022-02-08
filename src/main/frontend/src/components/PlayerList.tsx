@@ -20,7 +20,7 @@ export const PlayerList: React.FC = () => {
       {players.map((player, i) => {
         // console.log(player, i);
         return (
-          <StyledListItem>
+          <StyledListItem key={player.name}>
             <div className="token">
               <img
                 src={tokenImages.get(Object.values(Token)[player.token])}
