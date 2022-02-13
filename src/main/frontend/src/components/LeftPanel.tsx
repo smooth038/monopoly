@@ -1,9 +1,15 @@
+import {
+  addPlayer,
+  advanceAllPlayersByOne,
+  nextPlayer,
+  removeLastPlayer,
+  resetPlayerMock,
+} from "slices/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { PlayerList } from "components/PlayerList";
 import React from "react";
 import { RootState } from "app/store";
-import { nextPlayer } from "slices/gameSlice";
 import styled from "styled-components";
 
 export interface LeftPanelProps {
@@ -17,9 +23,31 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   return (
     <StyledLeftPanel frameHeight={props.frameHeight}>
       <PlayerList />
-      <button onClick={(event: React.MouseEvent) => dispatch(nextPlayer())}>
-        Next player
-      </button>
+      <div className="buttons">
+        <button onClick={(event: React.MouseEvent) => dispatch(nextPlayer())}>
+          Next player
+        </button>
+        <button
+          onClick={(event: React.MouseEvent) =>
+            dispatch(advanceAllPlayersByOne())
+          }
+        >
+          Advance all players by one
+        </button>
+        <button
+          onClick={(event: React.MouseEvent) => dispatch(removeLastPlayer())}
+        >
+          Remove one player
+        </button>
+        <button onClick={(event: React.MouseEvent) => dispatch(addPlayer())}>
+          Add one player
+        </button>
+        <button
+          onClick={(event: React.MouseEvent) => dispatch(resetPlayerMock())}
+        >
+          Reset players
+        </button>
+      </div>
     </StyledLeftPanel>
   );
 };
@@ -52,4 +80,9 @@ const StyledLeftPanel = styled.div<{ frameHeight: number }>`
   animation-duration: 0.8s;
   animation-timing-function: ease;
   animation-iteration-count: 1;
+
+  .buttons {
+    position: absolute;
+    top: 500px;
+  }
 `;

@@ -1,5 +1,5 @@
 import { PayloadAction, Slice, createSlice } from "@reduxjs/toolkit";
-import { Player, PlayerInfo } from "models/player";
+import { Player, PlayerInfo, playerMock } from "models/player";
 
 import { GameStep } from "models/game";
 
@@ -15,7 +15,7 @@ const initialState: GameState = {
   gameStep: GameStep.NO_GAME,
   currentPlayer: 0,
   hasRolled: false,
-  players: [],
+  players: [...playerMock],
   buildings: [], 
 };
 
@@ -42,11 +42,33 @@ export const gameSlice = createSlice({
       if (state.currentPlayer < numberOfPlayers - 1) {
         return { ...state, currentPlayer: state.currentPlayer + 1};
       }
-      return {...state, currentPlayer: 0};
+      return { ...state, currentPlayer: 0 };
+    },
+    advanceAllPlayersByOne: (state) => {
+      const players: Player[] = [];
+      for (const player of state.players) {
+        players.push({...player, position: player.position < 39 ? player.position + 1 : 0});
+      }
+      return { ...state, players: players };
+    },
+    removeLastPlayer: (state) => {
+      const players = [...state.players];
+      players.pop();
+      return { ...state, players };
+    },
+    addPlayer: (state) => {
+      const players = [...state.players];
+      if (players.length < 8) {
+        players.push({...playerMock[players.length], position: players[0].position});
+      }
+      return { ...state, players };
+    },
+    resetPlayerMock: (state) => {
+      return { ...state, players: playerMock}
     }
   },
 });
 
-export const { startGame, nextPlayer } = gameSlice.actions;
+export const { startGame, nextPlayer, advanceAllPlayersByOne, removeLastPlayer, addPlayer, resetPlayerMock } = gameSlice.actions;
 
 export default gameSlice.reducer;

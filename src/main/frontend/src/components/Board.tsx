@@ -5,17 +5,28 @@ import {
   spaceCoordinates,
 } from "helpers/boardSpaceHelper";
 import React, { useState } from "react";
+import {
+  Token,
+  centerCoordinates,
+  getTokenOffset,
+  tokenImages,
+} from "helpers/tokenHelper";
 
+import { Player } from "models/player";
+import { RootState } from "app/store";
 import boardImage from "assets/board-high-res.jpg";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 export interface BoardProps {
   frameHeight: number;
 }
 
 export const Board: React.FC<BoardProps> = (props: BoardProps) => {
+  const players = useSelector((state: RootState) => state.game.players);
   const [highlightVisible, setHighlightVisible] = useState(true);
   const [highlightedSquare, setHighlightedSquare] = useState(1);
+  const tokenSize = 0.04;
 
   const handleBoardClick = (event: React.MouseEvent) => {
     let targetRect = event.currentTarget.getBoundingClientRect();
@@ -35,6 +46,20 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
     }
   };
 
+  const getTokenCoordinates = (player: Player) => {
+    let coordinates = centerCoordinates(
+      spaceCoordinates.get(player.position) as Coordinates,
+      tokenSize
+    );
+    const offset = getTokenOffset(player, players);
+    coordinates = {
+      ...coordinates,
+      x1: coordinates.x1 + offset.x,
+      y1: coordinates.y1 + offset.y,
+    };
+    return coordinates;
+  };
+
   return (
     <StyledBoard frameHeight={props.frameHeight} onClick={handleBoardClick}>
       <div className="lighting" />
@@ -44,6 +69,17 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
           coordinates={spaceCoordinates.get(highlightedSquare) as Coordinates}
         />
       )}
+      {players.map((player) => (
+        <StyledToken
+          tokenSize={tokenSize}
+          coordinates={getTokenCoordinates(player)}
+        >
+          <img
+            src={tokenImages.get(Object.values(Token)[player.token])}
+            alt={Object.keys(Token)[player.token]}
+          />
+        </StyledToken>
+      ))}
     </StyledBoard>
   );
 };
@@ -82,15 +118,7 @@ const StyledBoard = styled.div<{ frameHeight: number }>`
   animation-name: fromRight;
   animation-duration: 0.8s;
   animation-timing-function: ease;
-  animation-iteration-count: 1;
-  /* animation: rotate 1s ease forwards; */
-
-  .lighting {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(-210deg, #fff2, #fff0);
-  }
+  animation-iteration-count: 1coordinates;
 `;
 
 const StyledHighlight = styled.div<{
@@ -98,19 +126,36 @@ const StyledHighlight = styled.div<{
 }>`
   position: absolute;
   box-sizing: border-box;
+  border-radius: 8px;
   left: ${(props) => props.coordinates.x1 * 100}%;
   width: ${(props) => (props.coordinates.x2 - props.coordinates.x1) * 100}%;
   top: ${(props) => props.coordinates.y1 * 100}%;
   height: ${(props) => (props.coordinates.y2 - props.coordinates.y1) * 100}%;
-  animation: color_glow 1s linear infinite alternate;
+  animation: color_glow 0.4s linear infinite alternate;
 
   @keyframes color_glow {
     from {
       border: 0.25rem solid orange;
-      box-shadow: 0 0 0.25em 0 lightsalmon, inset 0 0 0.25em lightsalmon;
+      box-shadow: 0 0 0.25em 0 lightsalmon, inset 0 0 0.25em salmon;
     }
     to {
       border: 0.25rem solid brown;
     }
   }
+`;
+
+const StyledToken = styled.div<{
+  tokenSize: number;
+  coordinates: Coordinates;
+}>`
+  position: absolute;
+  left: ${(props) => props.coordinates.x1 * 100}%;
+  top: ${(props) => props.coordinates.y1 * 100}%;
+  height: ${(props) => props.tokenSize * 100}%;
+  border: 1px solid purple;
+  box-sizing: border-box;
+  img {
+    height: 100%;
+  }
+  transition: left 0.2s ease-in-out, top 0.2s ease-in-out;
 `;

@@ -45,7 +45,7 @@ export const getSquare = (x: number, y: number, rect: DOMRect): number => {
     return -2;
 }
 
-export const selectableSquares = [1, 3, 5, 6, 8, 9, 11, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 39];
+export const selectableSquares = [1, 3, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 39];
 
 export const spaceCoordinates = new Map<number, Coordinates>([
   [0, {x1: 0.862667, y1:0.864000, x2: 1.003167, y2: 1.003167}],

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Token, tokenImages } from "helpers/token";
+import { Token, tokenImages } from "helpers/tokenHelper";
 
 import { PlayerInfo } from "models/player";
 import styled from "styled-components";

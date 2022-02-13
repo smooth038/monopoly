@@ -1,4 +1,4 @@
-import { Token, tokenImages } from "helpers/token";
+import { Token, tokenImages } from "helpers/tokenHelper";
 
 import React from "react";
 import { RootState } from "app/store";
@@ -14,9 +14,11 @@ export const PlayerList: React.FC = () => {
 
   return (
     <StyledUnorderedList>
-      <StyledDice currentPlayer={currentPlayer}>
-        <img src={redDice} alt="dice" />
-      </StyledDice>
+      {players.length > 0 && (
+        <StyledDice currentPlayer={currentPlayer}>
+          <img src={redDice} alt="dice" />
+        </StyledDice>
+      )}
       {players.map((player, i) => {
         // console.log(player, i);
         return (
