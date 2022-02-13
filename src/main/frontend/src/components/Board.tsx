@@ -63,23 +63,41 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
   return (
     <StyledBoard frameHeight={props.frameHeight} onClick={handleBoardClick}>
       <div className="lighting" />
-      {highlightVisible && (
-        <StyledHighlight
-          className="highlight"
-          coordinates={spaceCoordinates.get(highlightedSquare) as Coordinates}
-        />
-      )}
-      {players.map((player) => (
-        <StyledToken
-          tokenSize={tokenSize}
-          coordinates={getTokenCoordinates(player)}
-        >
-          <img
-            src={tokenImages.get(Object.values(Token)[player.token])}
-            alt={Object.keys(Token)[player.token]}
-          />
-        </StyledToken>
-      ))}
+      {highlightVisible &&
+        (() => {
+          const { x1, y1, x2, y2 } = spaceCoordinates.get(
+            highlightedSquare
+          ) as Coordinates;
+          return (
+            <StyledHighlight
+              className="highlight"
+              style={{
+                left: x1 * 100 + "%",
+                width: (x2 - x1) * 100 + "%",
+                top: y1 * 100 + "%",
+                height: (y2 - y1) * 100 + "%",
+              }}
+            />
+          );
+        })()}
+      {players.map((player) => {
+        const { x1, y1 } = getTokenCoordinates(player);
+        return (
+          <StyledToken
+            key={player.token}
+            style={{
+              left: x1 * 100 + "%",
+              top: y1 * 100 + "%",
+              height: tokenSize * 100 + "%",
+            }}
+          >
+            <img
+              src={tokenImages.get(Object.values(Token)[player.token])}
+              alt={Object.keys(Token)[player.token]}
+            />
+          </StyledToken>
+        );
+      })}
     </StyledBoard>
   );
 };
@@ -121,16 +139,10 @@ const StyledBoard = styled.div<{ frameHeight: number }>`
   animation-iteration-count: 1coordinates;
 `;
 
-const StyledHighlight = styled.div<{
-  coordinates: Coordinates;
-}>`
+const StyledHighlight = styled.div`
   position: absolute;
   box-sizing: border-box;
   border-radius: 8px;
-  left: ${(props) => props.coordinates.x1 * 100}%;
-  width: ${(props) => (props.coordinates.x2 - props.coordinates.x1) * 100}%;
-  top: ${(props) => props.coordinates.y1 * 100}%;
-  height: ${(props) => (props.coordinates.y2 - props.coordinates.y1) * 100}%;
   animation: color_glow 0.4s linear infinite alternate;
 
   @keyframes color_glow {
@@ -144,15 +156,8 @@ const StyledHighlight = styled.div<{
   }
 `;
 
-const StyledToken = styled.div<{
-  tokenSize: number;
-  coordinates: Coordinates;
-}>`
+const StyledToken = styled.div`
   position: absolute;
-  left: ${(props) => props.coordinates.x1 * 100}%;
-  top: ${(props) => props.coordinates.y1 * 100}%;
-  height: ${(props) => props.tokenSize * 100}%;
-  border: 1px solid purple;
   box-sizing: border-box;
   img {
     height: 100%;
