@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   addPlayer,
   advanceAllPlayersByOne,
@@ -7,8 +8,8 @@ import {
 } from "slices/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
 
+import { Die } from "./Die";
 import { PlayerList } from "components/PlayerList";
-import React from "react";
 import { RootState } from "app/store";
 import styled from "styled-components";
 
@@ -18,6 +19,8 @@ export interface LeftPanelProps {
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   const gameState = useSelector((state: RootState) => state.game);
+  const [dieValue, setDieValue] = useState(1);
+  const [dieRoll, setDieRoll] = useState(false);
   const dispatch = useDispatch();
 
   return (
@@ -47,7 +50,15 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
         >
           Reset players
         </button>
+        <button onClick={() => setDieValue(dieValue < 6 ? dieValue + 1 : 1)}>
+          Increment die
+        </button>
+        <button onClick={() => setDieRoll(!dieRoll)}>Toggle die roll</button>
       </div>
+      <StyledDice>
+        <Die value={dieValue} rolling={dieRoll} dieNumber={1} />
+        <Die value={dieValue} rolling={dieRoll} dieNumber={2} />
+      </StyledDice>
     </StyledLeftPanel>
   );
 };
@@ -85,4 +96,11 @@ const StyledLeftPanel = styled.div<{ frameHeight: number }>`
     position: absolute;
     top: 500px;
   }
+`;
+
+const StyledDice = styled.div`
+  display: flex;
+  /* border: 1px solid red; */
+
+  justify-content: center;
 `;
