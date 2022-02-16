@@ -1,4 +1,8 @@
+import { UiAction, UiActionType } from "models/uiAction";
+import { UiRequest, UiRequestType } from "models/uiRequest";
+
 import { Dispatch } from "react";
+import { GameInfo } from "models/game";
 import { PlayerInfo } from "models/player";
 import axios from "axios";
 import { startGame } from "slices/gameSlice";
@@ -16,7 +20,7 @@ export const gameService = {
     //   console.log('Response:', JSON.stringify(response.data, null, 2));
     //   return response;
     // });
-    await axios.post<PlayerInfo[]>(baseUrl, players).then(
+    await axios.post<GameInfo>(baseUrl + '/new', players).then(
       (response) => {
         dispatch(startGame(response.data));
       }, (error) => {
@@ -24,4 +28,16 @@ export const gameService = {
       }
     )
   },
+  rollDice: async (gameId: number, dispatch: Dispatch<any>) => {
+    const rollRequest: UiRequest = {gameId, type: UiRequestType.ROLL, params: []};
+    return await axios.post<UiAction[]>(baseUrl, rollRequest).then(
+      (response) => {
+        const actions: UiAction[] = response.data;
+        if (actions.length < 1 || actions[0].type !== UiActionType.DICE_ROLL) {
+          return [-1, -1];
+        }
+        return [actions[0].params[0], actions[0].params[1]];
+      }
+    )
+  }
 }

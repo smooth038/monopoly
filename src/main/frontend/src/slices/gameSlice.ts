@@ -1,9 +1,10 @@
+import { GameInfo, GameStep } from "models/game";
 import { PayloadAction, Slice, createSlice } from "@reduxjs/toolkit";
 import { Player, PlayerInfo, playerMock } from "models/player";
-
-import { GameStep } from "models/game";
+import { UiAction, UiActionType } from "models/uiAction";
 
 export interface GameState {
+  gameId: number,
   gameStep: GameStep,
   currentPlayer: number,
   hasRolled: boolean,
@@ -12,6 +13,7 @@ export interface GameState {
 };
 
 const initialState: GameState = {
+  gameId: 0,
   gameStep: GameStep.NO_GAME,
   currentPlayer: 0,
   hasRolled: false,
@@ -23,9 +25,10 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    startGame: (state, action: PayloadAction<PlayerInfo[]>) => {
+    startGame: (state, action: PayloadAction<GameInfo>) => {
+      const gameId = action.payload.gameId;
       const newPlayers: Player[] = [];
-      for (const player of action.payload) {
+      for (const player of action.payload.players) {
         const newPlayer: Player = {
           name: player.name,
           token: player.token,
@@ -35,8 +38,17 @@ export const gameSlice = createSlice({
         } 
         newPlayers.push(newPlayer);
       }
-      return { ...state, gameStep: GameStep.GAME_BEGIN, players: [...state.players, ...newPlayers] };
+      return { ...state, gameId, gameStep: GameStep.GAME_BEGIN, players: [...state.players, ...newPlayers] };
     },
+    // diceRoll: (state, action: PayloadAction<UiAction[]>) => {
+    //   const actionList = action.payload;
+    //   if (actionList.length < 2 || actionList[0].type !== UiActionType.DICE_ROLL || actionList[1].type !== UiActionType.DICE_ROLL) {
+    //     console.error('Server did not answer with dice roll result!');
+    //     return { ...state };
+    //   }
+    //   const [first, second] = [actionList[0].params[0], actionList[1].params[0]];
+    //   return { ...state, }
+    // },
     nextPlayer: (state) => {
       const numberOfPlayers = state.players.length;
       if (state.currentPlayer < numberOfPlayers - 1) {

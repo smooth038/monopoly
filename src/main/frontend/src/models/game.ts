@@ -1,3 +1,4 @@
+import { PlayerInfo } from "./player";
 
 export enum GameStep {
   NO_GAME,
@@ -10,4 +11,9 @@ export enum GameStep {
   DEBT,
   BANKRUPTCY,
   GAME_END,
+}
+
+export interface GameInfo {
+  gameId: number,
+  players: PlayerInfo[],
 }

@@ -15,18 +15,20 @@ import java.util.stream.Collectors;
 public class GameService {
     private final GameRepository gameRepository;
     private PlayerService playerService;
+    private GameEngine gameEngine;
 
     @Autowired
-    public GameService(GameRepository gameRepository, PlayerService playerService) {
+    public GameService(GameRepository gameRepository, PlayerService playerService, GameEngine gameEngine) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
+        this.gameEngine = gameEngine;
     }
 
     public List<Game> getGames() {
         return gameRepository.findAll();
     }
 
-    public List<PlayerInfo> startNewGame(List<PlayerInfo> playerInfos) {
+    public GameInfo startNewGame(List<PlayerInfo> playerInfos) {
         Game game = new Game();
         gameRepository.save(game);
         List<Player> players = new ArrayList<>();
@@ -36,8 +38,11 @@ public class GameService {
             players.add(p);
         }
         addPlayersToGame(game.getId(), players);
-        return players.stream().map((player) -> new PlayerInfo(player.getName(), player.getToken().ordinal())).collect(
-                Collectors.toList());
+        return new GameInfo(game.getId(), playerInfos);
+    }
+
+    public List<UiAction> requestAction(UiRequest request) {
+        return gameEngine.act(request);
     }
 
     public void deleteGame(int gameId) {

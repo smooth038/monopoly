@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Die } from "./Die";
 import { PlayerList } from "components/PlayerList";
 import { RootState } from "app/store";
+import { gameService } from "service/gameService";
 import styled from "styled-components";
 
 export interface LeftPanelProps {
@@ -19,9 +20,25 @@ export interface LeftPanelProps {
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   const gameState = useSelector((state: RootState) => state.game);
-  const [dieValue, setDieValue] = useState(1);
-  const [dieRoll, setDieRoll] = useState(false);
+  const [dieValues, setDieValues] = useState([1, 1]);
+  const [isRolling, setIsRolling] = useState(false);
   const dispatch = useDispatch();
+
+  const handleRollDice = () => {
+    if (isRolling) {
+      return;
+    }
+    setIsRolling(true);
+    gameService.rollDice(gameState.gameId, dispatch).then((response) => {
+      console.log(response);
+      setDieValues([...response]);
+    });
+    const waitForRoll = async () =>
+      setTimeout(() => {
+        setIsRolling(false);
+      }, 1000);
+    waitForRoll();
+  };
 
   return (
     <StyledLeftPanel frameHeight={props.frameHeight}>
@@ -50,14 +67,13 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
         >
           Reset players
         </button>
-        <button onClick={() => setDieValue(dieValue < 6 ? dieValue + 1 : 1)}>
-          Increment die
+        <button onClick={() => setIsRolling(!isRolling)}>
+          Toggle die roll
         </button>
-        <button onClick={() => setDieRoll(!dieRoll)}>Toggle die roll</button>
       </div>
-      <StyledDice>
-        <Die value={dieValue} rolling={dieRoll} dieNumber={1} />
-        <Die value={dieValue} rolling={dieRoll} dieNumber={2} />
+      <StyledDice onClick={handleRollDice}>
+        <Die value={dieValues[0]} rolling={isRolling} dieNumber={1} />
+        <Die value={dieValues[1]} rolling={isRolling} dieNumber={2} />
       </StyledDice>
     </StyledLeftPanel>
   );
