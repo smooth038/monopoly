@@ -1,7 +1,7 @@
 import { GameInfo, GameStep } from "models/game";
-import { PayloadAction, Slice, createSlice } from "@reduxjs/toolkit";
-import { Player, PlayerInfo, playerMock } from "models/player";
-import { UiAction, UiActionType } from "models/uiAction";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+
+import { Player } from "models/player";
 
 export interface GameState {
   gameId: number,
@@ -14,10 +14,10 @@ export interface GameState {
 
 const initialState: GameState = {
   gameId: 0,
-  gameStep: GameStep.NO_GAME,
+  gameStep: 'TURN_BEGIN', 
   currentPlayer: 0,
   hasRolled: false,
-  players: [...playerMock],
+  players: [],
   buildings: [], 
 };
 
@@ -38,7 +38,7 @@ export const gameSlice = createSlice({
         } 
         newPlayers.push(newPlayer);
       }
-      return { ...state, gameId, gameStep: GameStep.GAME_BEGIN, players: [...state.players, ...newPlayers] };
+      return { ...state, gameId, gameStep: 'TURN_BEGIN', players: [...newPlayers] };
     },
     // diceRoll: (state, action: PayloadAction<UiAction[]>) => {
     //   const actionList = action.payload;
@@ -49,38 +49,49 @@ export const gameSlice = createSlice({
     //   const [first, second] = [actionList[0].params[0], actionList[1].params[0]];
     //   return { ...state, }
     // },
-    nextPlayer: (state) => {
+    setGameStep: (state, action: PayloadAction<GameStep>) => {
+      return { ...state, gameStep: action.payload}
+    },
+    nextPlayer: (state, action: PayloadAction<number>) => {
       const numberOfPlayers = state.players.length;
-      if (state.currentPlayer < numberOfPlayers - 1) {
-        return { ...state, currentPlayer: state.currentPlayer + 1};
+      const nextPlayer = (state.currentPlayer + 1) % numberOfPlayers;
+      if (action.payload !== nextPlayer) {
+        throw new Error('Out of sync: Current player should be ' + action.payload + ' but is ' + nextPlayer + ' on client side.');
       }
-      return { ...state, currentPlayer: 0 };
+      return { ...state, gameStep: 'TURN_BEGIN', currentPlayer: (state.currentPlayer + 1) % numberOfPlayers};
     },
-    advanceAllPlayersByOne: (state) => {
-      const players: Player[] = [];
-      for (const player of state.players) {
-        players.push({...player, position: player.position < 39 ? player.position + 1 : 0});
-      }
-      return { ...state, players: players };
-    },
-    removeLastPlayer: (state) => {
+    advanceCurrentPlayer: (state, reverse: PayloadAction<Boolean>) => {
+      const player = {...state.players[state.currentPlayer]};
+      player.position = (reverse.payload ? player.position - 1 : player.position + 1) % 40;
       const players = [...state.players];
-      players.pop();
-      return { ...state, players };
+      players[state.currentPlayer] = player;
+      return { ...state, players};
     },
-    addPlayer: (state) => {
-      const players = [...state.players];
-      if (players.length < 8) {
-        players.push({...playerMock[players.length], position: players[0].position});
-      }
-      return { ...state, players };
-    },
-    resetPlayerMock: (state) => {
-      return { ...state, players: playerMock}
-    }
+    // advanceAllPlayersByOne: (state) => {
+    //   const players: Player[] = [];
+    //   for (const player of state.players) {
+    //     players.push({...player, position: player.position < 39 ? player.position + 1 : 0});
+    //   }
+    //   return { ...state, players: players };
+    // },
+    // removeLastPlayer: (state) => {
+    //   const players = [...state.players];
+    //   players.pop();
+    //   return { ...state, players };
+    // },
+    // addPlayer: (state) => {
+    //   const players = [...state.players];
+    //   if (players.length < 8) {
+    //     players.push({...playerMock[players.length], position: players[0].position});
+    //   }
+    //   return { ...state, players };
+    // },
+    // resetPlayerMock: (state) => {
+    //   return { ...state, players: playerMock}
+    // }
   },
 });
 
-export const { startGame, nextPlayer, advanceAllPlayersByOne, removeLastPlayer, addPlayer, resetPlayerMock } = gameSlice.actions;
+export const { startGame, setGameStep, nextPlayer, advanceCurrentPlayer} = gameSlice.actions;
 
 export default gameSlice.reducer;

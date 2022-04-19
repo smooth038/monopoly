@@ -37,6 +37,12 @@ public class CardDeque {
         randomizeCards();
     }
 
+    public CardDeque() {
+        this.cardType = null;
+        this.deque = new LinkedList<>();
+        this.dequeState = "";
+    }
+
     private void randomizeCards() {
         List<Integer> allNumbers = new ArrayList<>();
         for (int i = 0; i < cardType.getNumberOfCards(); i++) {

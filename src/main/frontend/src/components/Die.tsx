@@ -6,6 +6,7 @@ export interface DieProps {
   value: number;
   rolling?: boolean;
   dieNumber: number;
+  disabled: boolean;
 }
 
 export const Die: React.FC<DieProps> = (props: DieProps) => {
@@ -35,9 +36,13 @@ export const Die: React.FC<DieProps> = (props: DieProps) => {
       <div className={props.rolling ? "tilt" : ""}>
         <div className={props.rolling ? "rotate" : ""}>
           <div className={props.rolling ? "shake" : ""}>
-            <StyledDie className={props.rolling ? "invRotate" : ""}>
+            <StyledDie
+              disabled={props.disabled}
+              key={props.dieNumber + "-" + props.value}
+              className={props.rolling ? "invRotate" : ""}
+            >
               {Array.from({ length: dieFace }).map((_, i) => (
-                <span></span>
+                <span key={"pip-" + i}></span>
               ))}
             </StyledDie>
           </div>
@@ -47,7 +52,8 @@ export const Die: React.FC<DieProps> = (props: DieProps) => {
   );
 };
 
-const StyledDie = styled.div`
+const StyledDie = styled.div<{ disabled: boolean }>`
+  position: relative;
   display: grid;
   grid-template-areas:
     "a . c"
@@ -62,11 +68,23 @@ const StyledDie = styled.div`
   aspect-ratio: 1;
   place-items: center;
   background-image: linear-gradient(150deg, #de1212, #990000);
-  /* background-color: #ce1212; */
   box-shadow: inset 0 5px #da1313, inset 5px 0 #8d0808, inset 0 -5px #450202,
     inset -5px 0 #8d0808;
 
   border-radius: 10%;
+  ::after {
+    position: absolute;
+    background-color: white;
+    content: "";
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 10%;
+    opacity: ${(props) => (props.disabled ? 0.3 : 0)};
+    transition: opacity 1s ease;
+  }
+
   span {
     display: block;
     width: 18px !important;
@@ -114,6 +132,9 @@ const StyledRoll = styled.div<{ dieNumber: number }>`
   .tilt {
     animation: tilt ${(props) => (props.dieNumber === 1 ? 0.2 : 0.22) + "s"}
       linear infinite;
+  }
+
+  .disabled {
   }
 
   @keyframes linear_shake {

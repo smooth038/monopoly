@@ -14,12 +14,15 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final GameService self;
     private PlayerService playerService;
     private GameEngine gameEngine;
+
 
     @Autowired
     public GameService(GameRepository gameRepository, PlayerService playerService, GameEngine gameEngine) {
         this.gameRepository = gameRepository;
+        this.self = this;
         this.playerService = playerService;
         this.gameEngine = gameEngine;
     }
@@ -37,11 +40,13 @@ public class GameService {
             playerService.registerNewPlayer(p);
             players.add(p);
         }
-        addPlayersToGame(game.getId(), players);
+        players.get(0).setCanRoll(true);
+        game.setPlayers(players);
+        gameRepository.save(game);
         return new GameInfo(game.getId(), playerInfos);
     }
 
-    public List<UiAction> requestAction(UiRequest request) {
+    public GameResponse requestAction(UiRequest request) {
         return gameEngine.act(request);
     }
 
@@ -50,12 +55,5 @@ public class GameService {
             throw new IllegalStateException("Game does not exist.");
         }
         gameRepository.deleteById(gameId);
-    }
-
-    @Transactional
-    public void addPlayersToGame(int gameId, List<Player> players) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new IllegalStateException("Game with id " + gameId + " does not exist."));
-        game.setPlayers(players);
     }
 }

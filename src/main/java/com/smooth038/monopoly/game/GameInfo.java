@@ -10,4 +10,12 @@ public class GameInfo {
         this.gameId = gameId;
         this.players = players;
     }
+
+    public Integer getGameId() {
+        return gameId;
+    }
+
+    public List<PlayerInfo> getPlayers() {
+        return players;
+    }
 }

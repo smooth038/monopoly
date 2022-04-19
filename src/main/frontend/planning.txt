@@ -35,7 +35,6 @@ Comment le back end informera le front de ce qui se passe?
     
     Le back end devrait lui-même avoir des états où il attend certaines actions du front, et ne répondra qu'aux appels pertinents.
     Ces états pourraient être
-        GAME_BEGIN      - la partie vient de commencer, le premier joueur n'a pas encore brassé les dés (p-e inutile?)
         TURN_BEGIN      - le tour du joueur commence, il n'a pas encore brassé les dés. 
         TURN_END        - le tour du joueur est terminé, on attend que le prochain joueur brasse les dés ou que n'importe quel joueur 
                           fasse une action (hypothéquer, construire une maison, échanger, etc.)

@@ -11,8 +11,8 @@ import { useDispatch } from "react-redux";
 export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const footerHeight = 0;
-  const [isNewGameModalVisible, setNewGameModalVisible] = useState(false);
-  const [isMainVisible, setMainVisible] = useState(true);
+  const [isNewGameModalVisible, setNewGameModalVisible] = useState(true);
+  const [isMainVisible, setMainVisible] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export const Controller = () => {
 
   const handleNewGameStart = (players: PlayerInfo[]) => {
     setNewGameModalVisible(false);
-    setMainVisible(true);
     gameService.startNewGame(players, dispatch);
+    setMainVisible(true);
   };
 
   return (

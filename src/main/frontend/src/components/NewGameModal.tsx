@@ -95,11 +95,15 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
       }
     }
     const newPlayers: PlayerInfo[] = [];
-    for (const player of players) {
+    // we randomize player order
+    let i = players.length;
+    while (i > 0) {
+      const player = players.splice(Math.floor(Math.random() * i), 1)[0];
       newPlayers.push({
-        name: player.name,
+        name: player.name.trim(),
         token: Object.values(Token).indexOf(player.token),
       });
+      i--;
     }
     props.onStart(newPlayers);
   };

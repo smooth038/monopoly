@@ -27,7 +27,7 @@ public class GameController {
     }
 
     @PostMapping
-    public List<UiAction> requestAction(@RequestBody UiRequest request) {
+    public GameResponse requestAction(@RequestBody UiRequest request) {
         return gameService.requestAction(request);
     }
 

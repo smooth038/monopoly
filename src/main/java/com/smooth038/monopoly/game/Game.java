@@ -30,7 +30,7 @@ public class Game {
     private List<Player> players;
 
     @Column(columnDefinition = "TINYINT")
-    private GameStep state = GameStep.GAME_BEGIN;
+    private GameStep state = GameStep.TURN_BEGIN;
 
     @Column(columnDefinition = "TINYINT")
     private short playerTurn = 0;
@@ -77,6 +77,10 @@ public class Game {
         return state;
     }
 
+    public void setState(GameStep state) {
+        this.state = state;
+    }
+
     public short getPlayerTurn() {
         return playerTurn;
     }
@@ -85,6 +89,14 @@ public class Game {
         return doubleDice;
     }
 
+    public void incrementDoubleDice() { doubleDice++; }
+
+    public void endTurn() {
+       playerTurn = (short)((playerTurn + 1) % players.size());
+       doubleDice = 0;
+       state = GameStep.TURN_BEGIN;
+    }
+    
     public PropertyRegister getPropertyRegister() {
         return propertyRegister;
     }

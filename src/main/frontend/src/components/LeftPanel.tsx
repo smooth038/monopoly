@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import {
-  addPlayer,
-  advanceAllPlayersByOne,
-  nextPlayer,
-  removeLastPlayer,
-  resetPlayerMock,
-} from "slices/gameSlice";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Die } from "./Die";
+import { GameStep } from "models/game";
+import { MessageLog } from "./MessageLog";
+import { Player } from "models/player";
 import { PlayerList } from "components/PlayerList";
 import { RootState } from "app/store";
+import { UiActionType } from "models/uiAction";
 import { gameService } from "service/gameService";
+import { nextAction } from "slices/actionsSlice";
 import styled from "styled-components";
 
 export interface LeftPanelProps {
@@ -20,34 +18,114 @@ export interface LeftPanelProps {
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   const gameState = useSelector((state: RootState) => state.game);
+  const gameStepRef = useRef<GameStep>(gameState.gameStep);
+  const currentPlayerRef = useRef<Player>(
+    gameState.players[gameState.currentPlayer]
+  );
+  const actionsState = useSelector((state: RootState) => state.actions);
   const [dieValues, setDieValues] = useState([1, 1]);
   const [isRolling, setIsRolling] = useState(false);
+  const [diceDisabled, setDiceDisabled] = useState(false);
+  const [nextPlayerButtonDisabled, setNextPlayerButtonDisabled] =
+    useState(true);
+  const [messageLog, setMessageLog] = useState(
+    "!!WELCOME TO MONOPOLY!!\nGAME STARTED!\n"
+  );
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    gameStepRef.current = gameState.gameStep;
+    currentPlayerRef.current = gameState.players[gameState.currentPlayer];
+    if (gameState.players.length > 0) {
+      switch (gameState.gameStep) {
+        case "TURN_BEGIN":
+          setMessageLog(
+            (log) =>
+              log +
+              "\nIt's " +
+              gameState.players[gameState.currentPlayer].name +
+              "'s turn!\n"
+          );
+          setDiceDisabled(false);
+          setNextPlayerButtonDisabled(true);
+          break;
+        case "TURN_END":
+          console.log("TURN END");
+          break;
+        case "RE_ROLL":
+          console.log("RE ROLL");
+          break;
+        default:
+        // setMessageLog((log) => log + gameState.gameStep + "\n");
+      }
+    }
+  }, [gameState]);
+
+  useEffect(() => {
+    if (actionsState.isAdvancing) {
+      setDiceDisabled(true);
+    } else {
+      switch (gameStepRef.current) {
+        case "TURN_END":
+          setNextPlayerButtonDisabled(false);
+          break;
+        case "RE_ROLL":
+          setDiceDisabled(false);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [actionsState.isAdvancing]);
+
+  useEffect(() => {
+    if (
+      actionsState.actions.length > 0 &&
+      actionsState.actions[0].type === UiActionType.DICE_ROLL
+    ) {
+      setDieValues(actionsState.actions[0].params);
+      (async () => {
+        setTimeout(() => {
+          setIsRolling(false);
+          const action = actionsState.actions[0];
+          const result = action.params[0] + action.params[1];
+          const doubleDice = action.params[0] === action.params[1];
+          setMessageLog(
+            (log) =>
+              log +
+              currentPlayerRef.current.name +
+              " has rolled " +
+              result +
+              (doubleDice ? ". That's a double!\n" : ".\n")
+          );
+          dispatch(nextAction());
+        }, 1000);
+      })();
+    }
+  }, [actionsState.actions, dispatch]);
+
   const handleRollDice = () => {
-    if (isRolling) {
+    if (isRolling || diceDisabled) {
       return;
     }
     setIsRolling(true);
-    gameService.rollDice(gameState.gameId, dispatch).then((response) => {
-      console.log(response);
-      setDieValues([...response]);
-    });
-    const waitForRoll = async () =>
-      setTimeout(() => {
-        setIsRolling(false);
-      }, 1000);
-    waitForRoll();
+    gameService.rollDice(gameState.gameId, dispatch);
   };
 
   return (
     <StyledLeftPanel frameHeight={props.frameHeight}>
       <PlayerList />
       <div className="buttons">
-        <button onClick={(event: React.MouseEvent) => dispatch(nextPlayer())}>
+        <button
+          disabled={nextPlayerButtonDisabled}
+          className={nextPlayerButtonDisabled ? "disabled" : undefined}
+          onClick={(event: React.MouseEvent) =>
+            gameService.endTurn(gameState.gameId, dispatch)
+          }
+        >
           Next player
         </button>
-        <button
+        {/* <button
           onClick={(event: React.MouseEvent) =>
             dispatch(advanceAllPlayersByOne())
           }
@@ -66,15 +144,26 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           onClick={(event: React.MouseEvent) => dispatch(resetPlayerMock())}
         >
           Reset players
-        </button>
-        <button onClick={() => setIsRolling(!isRolling)}>
+        </button> */}
+        {/* <button onClick={() => setIsRolling(!isRolling)}>
           Toggle die roll
-        </button>
+        </button> */}
       </div>
       <StyledDice onClick={handleRollDice}>
-        <Die value={dieValues[0]} rolling={isRolling} dieNumber={1} />
-        <Die value={dieValues[1]} rolling={isRolling} dieNumber={2} />
+        <Die
+          disabled={diceDisabled}
+          value={dieValues[0]}
+          rolling={isRolling}
+          dieNumber={1}
+        />
+        <Die
+          disabled={diceDisabled}
+          value={dieValues[1]}
+          rolling={isRolling}
+          dieNumber={2}
+        />
       </StyledDice>
+      <MessageLog value={messageLog} />
     </StyledLeftPanel>
   );
 };
@@ -110,7 +199,7 @@ const StyledLeftPanel = styled.div<{ frameHeight: number }>`
 
   .buttons {
     position: absolute;
-    top: 500px;
+    top: 700px;
   }
 `;
 

@@ -4,19 +4,22 @@ import {
   selectableSquares,
   spaceCoordinates,
 } from "helpers/boardSpaceHelper";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Token,
   centerCoordinates,
   getTokenOffset,
   tokenImages,
 } from "helpers/tokenHelper";
+import { nextAction, setAdvancing } from "slices/actionsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Player } from "models/player";
 import { RootState } from "app/store";
+import { UiActionType } from "models/uiAction";
+import { advanceCurrentPlayer } from "slices/gameSlice";
 import boardImage from "assets/board-high-res.jpg";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 
 export interface BoardProps {
   frameHeight: number;
@@ -24,9 +27,34 @@ export interface BoardProps {
 
 export const Board: React.FC<BoardProps> = (props: BoardProps) => {
   const players = useSelector((state: RootState) => state.game.players);
+  const actionsState = useSelector((state: RootState) => state.actions);
   const [highlightVisible, setHighlightVisible] = useState(true);
   const [highlightedSquare, setHighlightedSquare] = useState(1);
   const tokenSize = 0.04;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (
+      actionsState.actions.length > 0 &&
+      actionsState.actions[0].type === UiActionType.ADVANCE
+    ) {
+      dispatch(setAdvancing(true));
+      const distance = actionsState.actions[0].params[0];
+      const reverse = distance < 0;
+      for (let i = 1; i <= Math.abs(distance); i++) {
+        setTimeout(() => {
+          dispatch(advanceCurrentPlayer(reverse));
+          if (i === Math.abs(distance)) {
+            setTimeout(() => {
+              dispatch(setAdvancing(false));
+              dispatch(nextAction());
+            }, 500);
+          }
+        }, 300 * i);
+      }
+    }
+  }, [actionsState.actions, dispatch]);
 
   const handleBoardClick = (event: React.MouseEvent) => {
     let targetRect = event.currentTarget.getBoundingClientRect();
