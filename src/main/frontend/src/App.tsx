@@ -1,8 +1,12 @@
 import { Controller } from "./components/Controller";
-import React from "react";
+import { Suspense } from "react";
 
 function App() {
-  return <Controller />;
+  return (
+    <Suspense fallback={null}>
+      <Controller />
+    </Suspense>
+  );
 }
 
 export default App;

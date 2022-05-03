@@ -1,0 +1,33 @@
+{
+  "newGameModal": {
+    "title": "New Game",
+    "numberOfPlayers": "Number of players:",
+    "nameInputPlaceholder": "Enter player name...",
+    "startGameButtonCaption": "Start game",
+    "emptyName": "One or more names are empty",
+    "duplicateNames": "Two or more names are duplicate",
+    "nameTooLong": "One name is too long (over 25 characters)",
+    "duplicateTokens": "Two or more tokens are duplicate"
+  },
+  "log": {
+    "welcomeMessage": "!!WELCOME TO MONOPOLY!!\nGAME STARTED!\n",
+    "startTurn": "\nIt's {{player}}'s turn!\n",
+    "roll": "{{player}} has rolled a {{diceRoll}}.\n",
+    "rollDouble1": "{{player}} has rolled a {{diceRoll}}. That's a double!\n",
+    "rollDouble2": "{{player}} has rolled a {{diceRoll}}. That's a second double!\n",
+    "rollDouble3": "{{player}} has rolled a third double and therefore goes straight into jail!\n",
+    "jailRoll": "{{player}} did not roll doubles and therefore must stay in jail.\n",
+    "putInJail": "{{player}} is put in jail.\n",
+    "releaseFromJail": "{{player}} is released from jail.\n",
+    "payTax": "{{player}} pays {{amount}}$ to the pot. (Total pot: {{jackpot}}$)\n",
+    "jailWait_one": "{{player}} waits in jail for one turn. ({{count}} turn remaining)\n",
+    "jailWait_other": "{{player}} waits in jail for one turn. ({{count}} turns remaining)\n"
+  },
+  "buttons": {
+    "endTurn": "End turn",
+    "jailWait": "Wait one turn ({{count}} remaining)",
+    "jailRoll": "Try to roll doubles",
+    "jailPay": "Pay 50$",
+    "jailGotf": "Use \"get out of jail free\" card"
+  }
+}

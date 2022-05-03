@@ -3,6 +3,7 @@ import { Token, tokenImages } from "helpers/tokenHelper";
 
 import { PlayerInfo } from "models/player";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 export interface NewGameModalProps {
   onStart: (players: PlayerInfo[]) => void;
@@ -11,6 +12,7 @@ export interface NewGameModalProps {
 export const NewGameModal: React.FC<NewGameModalProps> = (
   props: NewGameModalProps
 ) => {
+  const { t } = useTranslation("common");
   const [numberOfPlayers, setNumberOfPlayers] = useState(2);
   const [players, setPlayers] = useState<Array<{ name: string; token: Token }>>(
     [
@@ -74,21 +76,21 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
     const playerTokens: Token[] = [];
     for (let i = 0; i < numberOfPlayers; i++) {
       if (players[i].name.length > 25) {
-        alert("One name is too long (over 25 characters)");
+        alert(t("newGameModal.nameTooLong"));
         return;
       }
       if (!players[i].name) {
-        alert("One or more names are empty");
+        alert(t("newGameModal.emptyName"));
         return;
       }
       if (playerNames.includes(players[i].name)) {
-        alert("Two or more names are duplicate");
+        alert(t("newGameModal.duplicateNames"));
         return;
       } else {
         playerNames.push(players[i].name);
       }
       if (playerTokens.includes(players[i].token)) {
-        alert("Two ore more tokens are duplicate");
+        alert(t("newGameModal.duplicateTokens"));
         return;
       } else {
         playerTokens.push(players[i].token);
@@ -110,12 +112,12 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
 
   return (
     <StyledNewGameModal>
-      <h1>New Game</h1>
+      <h1>{t("newGameModal.title")}</h1>
       <form>
         <StyledRow>
           <StyledNumberOfPlayers>
             <label>
-              Number of players:&nbsp;&nbsp;
+              {t("newGameModal.numberOfPlayers")}&nbsp;&nbsp;
               <input
                 type="number"
                 onChange={handleNumberOfPlayersChange}
@@ -131,7 +133,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                 <StyledPlayerName>
                   <input
                     type="text"
-                    placeholder="Enter player name..."
+                    placeholder={t("newGameModal.nameInputPlaceholder")}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       handlePlayerNameChange(event, playerIndex)
                     }
@@ -173,7 +175,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
         ))}
         <StyledFormButtons>
           <button type="button" onClick={handleNewGameButtonClick}>
-            Start Game
+            {t("newGameModal.startGameButtonCaption")}
           </button>
         </StyledFormButtons>
       </form>

@@ -1,0 +1,36 @@
+{
+  "newGameModal": {
+    "title": "Nouvelle partie",
+    "numberOfPlayers": "Nombre de joueurs:",
+    "nameInputPlaceholder": "Entrer le nom du joueur...",
+    "startGameButtonCaption": "Débuter la partie",
+    "emptyName": "Au moins un joueur n'a pas de nom",
+    "duplicateNames": "Au moins deux joueurs ont le même nom",
+    "nameTooLong": "Au moins un nom est trop long (maximum 25 caractères)",
+    "duplicateTokens": "Au moins deux joueurs ont le même pion"
+  },
+  "log": {
+    "welcomeMessage": "!!BIENVENUE AU MONOPOLY!!\nPARTIE COMMENCÉE!\n",
+    "startTurn": "\nC'est au tour de {{player}}!\n",
+    "roll": "{{player}} a brassé {{diceRoll}}.\n",
+    "rollDouble1": "{{player}} brasse les dés et obtient {{diceRoll}}. Ce sont des doubles!\n",
+    "rollDouble2": "{{player}} brasse les dés et obtient {{diceRoll}}. Ce sont des doubles pour une deuxième fois!\n",
+    "rollDouble3": "{{player}} a obtenu des doubles pour une troisième fois et doit donc aller directement en prison!\n",
+    "jailRoll": "{{player}} n'a pas obtenu de doubles et doit donc rester en prison.\n",
+    "putInJail": "{{player}} est envoyé en prison.\n",
+    "releaseFromJail": "{{player}} est libéré de prison.\n",
+    "payTax": "{{player}} paie {{amount}}$ au jack pot. (Le jack pot s'élève à {{jackpot}}$)\n",
+    "jailWait_one": "{{player}} attend en prison pendant un tour. ({{count}} tour restant)\n",
+    "jailWait_zero": "{{player}} attend en prison pendant un tour. ({{count}} tour restant)\n",
+    "jailWait_other": "{{player}} attend en prison pendant un tour. ({{count}} tours restants)\n"
+  },
+  "buttons": {
+    "endTurn": "Fin de tour",
+    "jailWait_zero": "Attendre un tour ({{count}} restant)",
+    "jailWait_one": "Attendre un tour ({{count}} restant)",
+    "jailWait_other": "Attendre un tour ({{count}} restants)",
+    "jailRoll": "Tenter d'obtenir des doubles",
+    "jailPay": "Payer 50$",
+    "jailGotf": "Utiliser une carte \"sortir de prison gratuitement\""
+  }
+}

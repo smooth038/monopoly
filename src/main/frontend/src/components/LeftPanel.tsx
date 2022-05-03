@@ -7,16 +7,18 @@ import { Player } from "models/player";
 import { PlayerList } from "components/PlayerList";
 import { RootState } from "app/store";
 import { UiActionType } from "models/uiAction";
-import { decrementJailTurns } from "slices/gameSlice";
+import { current } from "@reduxjs/toolkit";
 import { gameService } from "service/gameService";
 import { nextAction } from "slices/actionsSlice";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 export interface LeftPanelProps {
   frameHeight: number;
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
+  const { t } = useTranslation("common");
   const gameState = useSelector((state: RootState) => state.game);
   const [gameHasBegun, setGameHasBegun] = useState(false);
   const currentPlayerRef = useRef<Player>(
@@ -33,9 +35,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
     (state: RootState) =>
       state.game.players[state.game.currentPlayer]?.jailTurnsRemaining
   );
-  const [messageLog, setMessageLog] = useState(
-    "!!WELCOME TO MONOPOLY!!\nGAME STARTED!\n"
-  );
+  const [messageLog, setMessageLog] = useState<string>(t("log.welcomeMessage"));
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -74,7 +74,10 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
         case "TURN_BEGIN":
           setMessageLog(
             (log) =>
-              log + "\nIt's " + currentPlayerRef.current.name + "'s turn!\n"
+              log +
+              t("log.startTurn", {
+                player: currentPlayerRef.current.name,
+              })
           );
           break;
         case "TURN_END":
@@ -87,7 +90,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
         // setMessageLog((log) => log + gameState.gameStep + "\n");
       }
     }
-  }, [gameState.gameStep, gameHasBegun]);
+  }, [gameState.gameStep, gameHasBegun, t]);
 
   useEffect(() => {
     if (actionsState.actions.length > 0) {
@@ -104,36 +107,56 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
               const action = actionsState.actions[0];
               const result = action.params[0] + action.params[1];
               const doubleDice = action.params[2];
-              setMessageLog(
-                (log) => log + currentPlayerRef.current.name + " has rolled a "
-              );
               switch (doubleDice) {
                 case 0:
                   if (!jailRoll.current) {
-                    setMessageLog((log) => log + result + ".\n");
+                    setMessageLog(
+                      (log) =>
+                        log +
+                        t("log.roll", {
+                          player: currentPlayerRef.current.name,
+                          diceRoll: result,
+                        })
+                    );
                   } else {
                     setMessageLog(
                       (log) =>
                         log +
-                        result +
-                        ", which is not a double, and so must stay in jail for this turn.\n"
+                        t("log.jailRoll", {
+                          player: currentPlayerRef.current.name,
+                        })
                     );
                     jailRoll.current = false;
                   }
                   break;
                 case 1:
-                  setMessageLog((log) => log + result + ", that's a double!\n");
+                  setMessageLog(
+                    (log) =>
+                      log +
+                      t("log.rollDouble1", {
+                        player: currentPlayerRef.current.name,
+                        diceRoll: result,
+                      })
+                  );
                   break;
                 case 2:
                   setMessageLog(
-                    (log) => log + result + ", that's a second double!\n"
+                    (log) =>
+                      log +
+                      t("log.rollDouble2", {
+                        player: currentPlayerRef.current.name,
+                        diceRoll: result,
+                      })
                   );
                   break;
                 case 3:
                   setMessageLog(
                     (log) =>
                       log +
-                      "third double and therefore goes straight to jail!\n"
+                      t("log.rollDouble3", {
+                        player: currentPlayerRef.current.name,
+                        diceRoll: result,
+                      })
                   );
                   break;
                 default:
@@ -148,29 +171,32 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
         case UiActionType.JAIL_IN:
           setMessageLog(
             (log) =>
-              log + currentPlayerRef.current.name + " is sent into jail.\n"
+              log +
+              t("log.putInJail", { player: currentPlayerRef.current.name })
           );
           break;
         case UiActionType.JAIL_OUT:
           setMessageLog(
             (log) =>
-              log + currentPlayerRef.current.name + " is set free from jail.\n"
+              log +
+              t("log.releaseFromJail", {
+                player: currentPlayerRef.current.name,
+              })
           );
           break;
         case UiActionType.TAX:
           setMessageLog(
             (log) =>
               log +
-              currentPlayerRef.current.name +
-              " pays " +
-              actionsState.actions[0].params[0] +
-              "$ to the pot. (Total pot: " +
-              actionsState.actions[0].params[1].toLocaleString() +
-              "$)\n"
+              t("log.payTax", {
+                player: currentPlayerRef.current.name,
+                amount: actionsState.actions[0].params[0].toLocaleString(),
+                jackpot: actionsState.actions[0].params[1].toLocaleString(),
+              })
           );
       }
     }
-  }, [actionsState.actions, dispatch]);
+  }, [actionsState.actions, dispatch, t]);
 
   const handleRollDice = (isJailRoll: boolean = false) => {
     if (isRolling || (!isJailRoll && diceDisabled)) {
@@ -211,16 +237,24 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
             gameService.endTurn(gameState.gameId, dispatch)
           }
         >
-          End turn
+          {t("buttons.endTurn")}
         </button>
         {jailTurnsRemaining > 0 && gameState.gameStep === "TURN_BEGIN" && (
           <div className="inJailOptions">
             <button
-              onClick={(event: React.MouseEvent) =>
-                gameService.jailWait(gameState.gameId, dispatch)
-              }
+              onClick={(event: React.MouseEvent) => {
+                setMessageLog(
+                  (log) =>
+                    log +
+                    t("log.jailWait", {
+                      player: currentPlayerRef.current.name,
+                      count: jailTurnsRemaining - 1,
+                    })
+                );
+                gameService.jailWait(gameState.gameId, dispatch);
+              }}
             >
-              Wait one turn ({jailTurnsRemaining} remaining)
+              {t("buttons.jailWait", { count: jailTurnsRemaining })}
             </button>
             <button
               onClick={(event: React.MouseEvent) => {
@@ -228,18 +262,18 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                 handleRollDice(true);
               }}
             >
-              Try to roll doubles
+              {t("buttons.jailRoll")}
             </button>
             <button
               disabled={currentPlayerRef.current.cash < 50}
               className={
                 currentPlayerRef.current.cash < 50 ? "disabled" : undefined
               }
-              onClick={(event: React.MouseEvent) =>
-                gameService.jailPay(gameState.gameId, dispatch)
-              }
+              onClick={(event: React.MouseEvent) => {
+                gameService.jailPay(gameState.gameId, dispatch);
+              }}
             >
-              Pay 50$
+              {t("buttons.jailPay", { player: currentPlayerRef.current.name })}
             </button>
             <button
               disabled={currentPlayerRef.current.gojfCards > 0}
@@ -249,7 +283,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                   : undefined
               }
             >
-              Use "get out of jail free" card
+              {t("buttons.jailGotf")}
             </button>
           </div>
         )}
