@@ -1,12 +1,13 @@
 import { GameInfo, GameResponse } from "models/game";
 import { UiRequest, UiRequestType } from "models/uiRequest";
-import { nextPlayer, setGameStep, startGame } from "slices/gameSlice";
+import { decrementJailTurns, nextPlayer, setGameStep, startGame } from "slices/gameSlice";
 
 import { Dispatch } from "react";
 import { PlayerInfo } from "models/player";
 import { UiActionType } from "models/uiAction";
 import { addActions } from "slices/actionsSlice";
 import axios from "axios";
+import { updateEnumMember } from "typescript";
 
 const baseUrl = 'http://localhost:8080/api/game'
 
@@ -24,6 +25,7 @@ export const gameService = {
     await axios.post<GameInfo>(baseUrl + '/new', players).then(
       (response) => {
         dispatch(startGame(response.data));
+        dispatch(addActions([{type: UiActionType.GAME_START, params: []}]));
       }, (error) => {
         console.error(error);
       }
@@ -51,13 +53,39 @@ export const gameService = {
     const endTurnRequest: UiRequest = {gameId, type: UiRequestType.END_TURN, params: []};
     return await axios.post<GameResponse>(baseUrl, endTurnRequest).then(
       (response) => {
-        if (response.data.actions.length > 0 && response.data.actions[0].type === UiActionType.NEXT_PLAYER && response.data.actions[0].params.length > 0) {
-          dispatch(nextPlayer(response.data.actions[0].params[0]));
+        if (response.data.actions.length > 0 && response.data.actions[0].type === UiActionType.NEXT_PLAYER) {
+          dispatch(nextPlayer());
         }
         else {
           console.error(response.data.actions);
           throw new Error('Unexpected back end response.\n');
         }
       }
-    )}
+    );
+  },
+  jailWait: async (gameId: number, dispatch: Dispatch<any>) => {
+    const jailWaitRequest: UiRequest = {gameId, type: UiRequestType.JAIL_WAIT, params: []};
+    return await axios.post<GameResponse>(baseUrl, jailWaitRequest).then(
+      (response) => {
+        dispatch(setGameStep(response.data.gameStep));
+        dispatch(addActions(response.data.actions));
+        dispatch(decrementJailTurns());
+      }
+    );
+  },
+  jailPay: async (gameId: number, dispatch: Dispatch<any>) => {
+    const jailPayRequest: UiRequest = {gameId, type: UiRequestType.JAIL_PAY, params: []};
+    return await axios.post<GameResponse>(baseUrl, jailPayRequest).then((response) => {
+      dispatch(setGameStep(response.data.gameStep));
+      dispatch(addActions(response.data.actions));
+    });
+  },
+  jailRoll: async (gameId: number, dispatch: Dispatch<any>) => {
+    const jailRollRequest: UiRequest = {gameId, type: UiRequestType.JAIL_ROLL, params: []};
+    return await axios.post<GameResponse>(baseUrl, jailRollRequest).then((response) => {
+      dispatch(setGameStep(response.data.gameStep));
+      dispatch(addActions(response.data.actions));
+      dispatch(decrementJailTurns());
+    });
+  }
 }

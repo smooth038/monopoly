@@ -1,22 +1,21 @@
 import { GameInfo, GameStep } from "models/game";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-import { Player } from "models/player";
+import { Player, playerMock } from "models/player";
 
 export interface GameState {
   gameId: number,
   gameStep: GameStep,
   currentPlayer: number,
-  hasRolled: boolean,
-  players: Player[]
+  players: Player[],
   buildings: {space: number, count: number}[],
+  gameLock: boolean,
 };
 
 const initialState: GameState = {
   gameId: 0,
   gameStep: 'TURN_BEGIN', 
+  gameLock: false,
   currentPlayer: 0,
-  hasRolled: false,
   players: [],
   buildings: [], 
 };
@@ -34,6 +33,8 @@ export const gameSlice = createSlice({
           token: player.token,
           position: 0,
           isInJail: false,
+          jailTurnsRemaining: 0,
+          gojfCards: 0,
           cash: 1500,
         } 
         newPlayers.push(newPlayer);
@@ -52,12 +53,8 @@ export const gameSlice = createSlice({
     setGameStep: (state, action: PayloadAction<GameStep>) => {
       return { ...state, gameStep: action.payload}
     },
-    nextPlayer: (state, action: PayloadAction<number>) => {
+    nextPlayer: (state) => {
       const numberOfPlayers = state.players.length;
-      const nextPlayer = (state.currentPlayer + 1) % numberOfPlayers;
-      if (action.payload !== nextPlayer) {
-        throw new Error('Out of sync: Current player should be ' + action.payload + ' but is ' + nextPlayer + ' on client side.');
-      }
       return { ...state, gameStep: 'TURN_BEGIN', currentPlayer: (state.currentPlayer + 1) % numberOfPlayers};
     },
     advanceCurrentPlayer: (state, reverse: PayloadAction<Boolean>) => {
@@ -67,31 +64,88 @@ export const gameSlice = createSlice({
       players[state.currentPlayer] = player;
       return { ...state, players};
     },
-    // advanceAllPlayersByOne: (state) => {
-    //   const players: Player[] = [];
-    //   for (const player of state.players) {
-    //     players.push({...player, position: player.position < 39 ? player.position + 1 : 0});
-    //   }
-    //   return { ...state, players: players };
-    // },
-    // removeLastPlayer: (state) => {
-    //   const players = [...state.players];
-    //   players.pop();
-    //   return { ...state, players };
-    // },
-    // addPlayer: (state) => {
-    //   const players = [...state.players];
-    //   if (players.length < 8) {
-    //     players.push({...playerMock[players.length], position: players[0].position});
-    //   }
-    //   return { ...state, players };
-    // },
-    // resetPlayerMock: (state) => {
-    //   return { ...state, players: playerMock}
-    // }
+    payTax: (state, amount: PayloadAction<number>) => {
+      const player = {...state.players[state.currentPlayer]};
+      // for now, we don't keep the jackpot total value in the UI
+      player.cash -= amount.payload;
+      const players = [...state.players];
+      players[state.currentPlayer] = player;
+      return { ...state, players};   
+    },
+    setGameLock: (state, action: PayloadAction<boolean>) => {
+      return {...state, gameLock: action.payload};
+    },
+    sendPlayerToJail: (state) => {
+      const player = {...state.players[state.currentPlayer]};
+      player.position = 10;
+      player.isInJail = true;
+      player.jailTurnsRemaining = 3;
+      const players = [...state.players];
+      players[state.currentPlayer] = player;
+      return { ...state, players};
+    },
+    freePlayerFromJail: (state) => {
+      const player = {...state.players[state.currentPlayer]};
+      player.isInJail = false;
+      player.jailTurnsRemaining = 0;
+      const players = [...state.players];
+      players[state.currentPlayer] = player;
+      return { ...state, players};
+    },
+    decrementJailTurns: (state) => {
+      const player = {...state.players[state.currentPlayer]};
+      player.jailTurnsRemaining -= 1;
+      const players = [...state.players];
+      players[state.currentPlayer] = player;
+      return { ...state, players}; 
+    },
+    advanceAllPlayersByOne: (state) => {
+      const players: Player[] = [];
+      for (const player of state.players) {
+        players.push({...player, position: player.position < 39 ? player.position + 1 : 0});
+      }
+      return { ...state, players: players };
+    },
+    removeLastPlayer: (state) => {
+      const players = [...state.players];
+      players.pop();
+      return { ...state, players };
+    },
+    addPlayer: (state) => {
+      const players = [...state.players];
+      if (players.length < 8) {
+        players.push({...playerMock[players.length], position: players[0].position});
+      }
+      return { ...state, players };
+    },
+    resetPlayerMock: (state) => {
+      return { ...state, players: playerMock}
+    },
+    allPlayersToJail: (state) => {
+      const players : Player[] = [];      
+      for (const player of state.players) {
+        players.push({...player, isInJail: true, position: 10 });
+      }
+      return { ...state, players };
+    }
   },
 });
 
-export const { startGame, setGameStep, nextPlayer, advanceCurrentPlayer} = gameSlice.actions;
+export const { 
+  startGame, 
+  setGameStep, 
+  nextPlayer, 
+  advanceCurrentPlayer, 
+  payTax,
+  setGameLock,
+  sendPlayerToJail, 
+  freePlayerFromJail, 
+  decrementJailTurns,
+  advanceAllPlayersByOne, 
+  removeLastPlayer, 
+  addPlayer, 
+  resetPlayerMock, 
+  allPlayersToJail
+} = gameSlice.actions;
 
 export default gameSlice.reducer;

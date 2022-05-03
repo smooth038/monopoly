@@ -3,6 +3,8 @@ export interface Player {
   token: number,
   position: number,
   isInJail: boolean,
+  jailTurnsRemaining: number,
+  gojfCards: number,
   cash: number,
 }
 
@@ -17,6 +19,8 @@ export const playerMock: Player[] = [
     token: 1,
     position: 3,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 1500,
   },
   {
@@ -24,6 +28,8 @@ export const playerMock: Player[] = [
     token: 5,
     position: 4,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 2202,
   },
   {
@@ -31,6 +37,8 @@ export const playerMock: Player[] = [
     token: 2,
     position: 3,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 1500,
   },
   {
@@ -38,6 +46,8 @@ export const playerMock: Player[] = [
     token: 6,
     position: 2,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 223,
   },
   {
@@ -45,6 +55,8 @@ export const playerMock: Player[] = [
     token: 8,
     position: 2,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 995,
   },
   {
@@ -52,6 +64,8 @@ export const playerMock: Player[] = [
     token: 0,
     position: 1,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 5121,
   },
   {
@@ -59,6 +73,8 @@ export const playerMock: Player[] = [
     token: 3,
     position: 2,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 995,
   },
   {
@@ -66,6 +82,8 @@ export const playerMock: Player[] = [
     token: 4,
     position: 3,
     isInJail: false,
+    jailTurnsRemaining: 0,
+    gojfCards: 0,
     cash: 5121,
   },
 ]

@@ -40,7 +40,6 @@ public class GameService {
             playerService.registerNewPlayer(p);
             players.add(p);
         }
-        players.get(0).setCanRoll(true);
         game.setPlayers(players);
         gameRepository.save(game);
         return new GameInfo(game.getId(), playerInfos);

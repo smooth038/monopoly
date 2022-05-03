@@ -48,7 +48,7 @@ button {
 button {
   font-variant: small-caps;
   font-size: 1.25rem;
-  padding: 0.25em 2em;
+  padding: 0.25em 1.5em;
   background-color: transparent;
   border: 3px solid white;
   box-shadow: 0 0 0.5em 0 white, inset 0 0 0.5em 0 white;

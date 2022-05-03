@@ -4,6 +4,7 @@ export interface UiAction {
 }
 
 export enum UiActionType {
+  GAME_START = "GAME_START",
   NEXT_PLAYER = "NEXT_PLAYER",
   DICE_ROLL = "DICE_ROLL",
   ADVANCE = "ADVANCE",

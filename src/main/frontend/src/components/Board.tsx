@@ -4,21 +4,27 @@ import {
   selectableSquares,
   spaceCoordinates,
 } from "helpers/boardSpaceHelper";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Token,
   centerCoordinates,
   getTokenOffset,
   tokenImages,
 } from "helpers/tokenHelper";
-import { nextAction, setAdvancing } from "slices/actionsSlice";
+import {
+  advanceCurrentPlayer,
+  freePlayerFromJail,
+  payTax,
+  sendPlayerToJail,
+  setGameLock,
+} from "slices/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Player } from "models/player";
 import { RootState } from "app/store";
 import { UiActionType } from "models/uiAction";
-import { advanceCurrentPlayer } from "slices/gameSlice";
 import boardImage from "assets/board-high-res.jpg";
+import { nextAction } from "slices/actionsSlice";
 import styled from "styled-components";
 
 export interface BoardProps {
@@ -35,23 +41,44 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      actionsState.actions.length > 0 &&
-      actionsState.actions[0].type === UiActionType.ADVANCE
-    ) {
-      dispatch(setAdvancing(true));
-      const distance = actionsState.actions[0].params[0];
-      const reverse = distance < 0;
-      for (let i = 1; i <= Math.abs(distance); i++) {
-        setTimeout(() => {
-          dispatch(advanceCurrentPlayer(reverse));
-          if (i === Math.abs(distance)) {
+    if (actionsState.actions.length > 0) {
+      switch (actionsState.actions[0].type) {
+        case UiActionType.ADVANCE:
+          dispatch(setGameLock(true));
+          const distance = actionsState.actions[0].params[0];
+          const reverse = distance < 0;
+          for (let i = 1; i <= Math.abs(distance); i++) {
             setTimeout(() => {
-              dispatch(setAdvancing(false));
+              dispatch(advanceCurrentPlayer(reverse));
+              if (i === Math.abs(distance)) {
+                setTimeout(() => {
+                  dispatch(setGameLock(false));
+                  dispatch(nextAction());
+                }, 500);
+              }
+            }, 300 * i);
+          }
+          break;
+        case UiActionType.JAIL_IN:
+          dispatch(setGameLock(true));
+          setTimeout(() => {
+            dispatch(sendPlayerToJail());
+            setTimeout(() => {
+              dispatch(setGameLock(false));
               dispatch(nextAction());
             }, 500);
-          }
-        }, 300 * i);
+          }, 300);
+          break;
+        case UiActionType.JAIL_OUT:
+          dispatch(freePlayerFromJail());
+          dispatch(nextAction());
+          break;
+        case UiActionType.TAX:
+          dispatch(payTax(actionsState.actions[0].params[0]));
+          dispatch(nextAction());
+          break;
+        default:
+          break;
       }
     }
   }, [actionsState.actions, dispatch]);
@@ -74,19 +101,22 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
     }
   };
 
-  const getTokenCoordinates = (player: Player) => {
-    let coordinates = centerCoordinates(
-      spaceCoordinates.get(player.position) as Coordinates,
-      tokenSize
-    );
-    const offset = getTokenOffset(player, players);
-    coordinates = {
-      ...coordinates,
-      x1: coordinates.x1 + offset.x,
-      y1: coordinates.y1 + offset.y,
-    };
-    return coordinates;
-  };
+  const getTokenCoordinates = useCallback(
+    (player: Player) => {
+      let coordinates = centerCoordinates(
+        spaceCoordinates.get(player.position) as Coordinates,
+        tokenSize
+      );
+      const offset = getTokenOffset(player, players);
+      coordinates = {
+        ...coordinates,
+        x1: coordinates.x1 + offset.x,
+        y1: coordinates.y1 + offset.y,
+      };
+      return coordinates;
+    },
+    [players]
+  );
 
   return (
     <StyledBoard frameHeight={props.frameHeight} onClick={handleBoardClick}>

@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Die } from "./Die";
-import { GameStep } from "models/game";
 import { MessageLog } from "./MessageLog";
 import { Player } from "models/player";
 import { PlayerList } from "components/PlayerList";
 import { RootState } from "app/store";
 import { UiActionType } from "models/uiAction";
+import { decrementJailTurns } from "slices/gameSlice";
 import { gameService } from "service/gameService";
 import { nextAction } from "slices/actionsSlice";
 import styled from "styled-components";
@@ -18,103 +18,191 @@ export interface LeftPanelProps {
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   const gameState = useSelector((state: RootState) => state.game);
-  const gameStepRef = useRef<GameStep>(gameState.gameStep);
+  const [gameHasBegun, setGameHasBegun] = useState(false);
   const currentPlayerRef = useRef<Player>(
     gameState.players[gameState.currentPlayer]
   );
   const actionsState = useSelector((state: RootState) => state.actions);
   const [dieValues, setDieValues] = useState([1, 1]);
   const [isRolling, setIsRolling] = useState(false);
+  const jailRoll = useRef(false);
   const [diceDisabled, setDiceDisabled] = useState(false);
   const [nextPlayerButtonDisabled, setNextPlayerButtonDisabled] =
     useState(true);
+  const jailTurnsRemaining = useSelector(
+    (state: RootState) =>
+      state.game.players[state.game.currentPlayer]?.jailTurnsRemaining
+  );
   const [messageLog, setMessageLog] = useState(
     "!!WELCOME TO MONOPOLY!!\nGAME STARTED!\n"
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    gameStepRef.current = gameState.gameStep;
     currentPlayerRef.current = gameState.players[gameState.currentPlayer];
-    if (gameState.players.length > 0) {
+    if (isRolling) {
+      return;
+    }
+    if (gameState.gameLock) {
+      setDiceDisabled(true);
+    } else {
+      switch (gameState.gameStep) {
+        case "TURN_BEGIN":
+          if (gameState.players[gameState.currentPlayer]?.isInJail) {
+            setDiceDisabled(true);
+          } else {
+            setDiceDisabled(false);
+          }
+          setNextPlayerButtonDisabled(true);
+          break;
+        case "TURN_END":
+          setNextPlayerButtonDisabled(false);
+          setDiceDisabled(true);
+          break;
+        case "RE_ROLL":
+          setDiceDisabled(false);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [gameState, isRolling]);
+
+  useEffect(() => {
+    if (gameHasBegun) {
       switch (gameState.gameStep) {
         case "TURN_BEGIN":
           setMessageLog(
             (log) =>
-              log +
-              "\nIt's " +
-              gameState.players[gameState.currentPlayer].name +
-              "'s turn!\n"
+              log + "\nIt's " + currentPlayerRef.current.name + "'s turn!\n"
           );
-          setDiceDisabled(false);
-          setNextPlayerButtonDisabled(true);
           break;
         case "TURN_END":
           console.log("TURN END");
           break;
         case "RE_ROLL":
-          console.log("RE ROLL");
+          console.log("RE-ROLL");
           break;
         default:
         // setMessageLog((log) => log + gameState.gameStep + "\n");
       }
     }
-  }, [gameState]);
+  }, [gameState.gameStep, gameHasBegun]);
 
   useEffect(() => {
-    if (actionsState.isAdvancing) {
-      setDiceDisabled(true);
-    } else {
-      switch (gameStepRef.current) {
-        case "TURN_END":
-          setNextPlayerButtonDisabled(false);
+    if (actionsState.actions.length > 0) {
+      switch (actionsState.actions[0].type) {
+        case UiActionType.GAME_START:
+          setGameHasBegun(true);
+          dispatch(nextAction());
           break;
-        case "RE_ROLL":
-          setDiceDisabled(false);
+        case UiActionType.DICE_ROLL:
+          setDieValues(actionsState.actions[0].params);
+          (async () => {
+            setTimeout(() => {
+              setIsRolling(false);
+              const action = actionsState.actions[0];
+              const result = action.params[0] + action.params[1];
+              const doubleDice = action.params[2];
+              setMessageLog(
+                (log) => log + currentPlayerRef.current.name + " has rolled a "
+              );
+              switch (doubleDice) {
+                case 0:
+                  if (!jailRoll.current) {
+                    setMessageLog((log) => log + result + ".\n");
+                  } else {
+                    setMessageLog(
+                      (log) =>
+                        log +
+                        result +
+                        ", which is not a double, and so must stay in jail for this turn.\n"
+                    );
+                    jailRoll.current = false;
+                  }
+                  break;
+                case 1:
+                  setMessageLog((log) => log + result + ", that's a double!\n");
+                  break;
+                case 2:
+                  setMessageLog(
+                    (log) => log + result + ", that's a second double!\n"
+                  );
+                  break;
+                case 3:
+                  setMessageLog(
+                    (log) =>
+                      log +
+                      "third double and therefore goes straight to jail!\n"
+                  );
+                  break;
+                default:
+                  console.error(
+                    "Received a dice roll with a doubleDice value > 3! That should never happen.\n"
+                  );
+              }
+              dispatch(nextAction());
+            }, 1000);
+          })();
           break;
-        default:
+        case UiActionType.JAIL_IN:
+          setMessageLog(
+            (log) =>
+              log + currentPlayerRef.current.name + " is sent into jail.\n"
+          );
           break;
-      }
-    }
-  }, [actionsState.isAdvancing]);
-
-  useEffect(() => {
-    if (
-      actionsState.actions.length > 0 &&
-      actionsState.actions[0].type === UiActionType.DICE_ROLL
-    ) {
-      setDieValues(actionsState.actions[0].params);
-      (async () => {
-        setTimeout(() => {
-          setIsRolling(false);
-          const action = actionsState.actions[0];
-          const result = action.params[0] + action.params[1];
-          const doubleDice = action.params[0] === action.params[1];
+        case UiActionType.JAIL_OUT:
+          setMessageLog(
+            (log) =>
+              log + currentPlayerRef.current.name + " is set free from jail.\n"
+          );
+          break;
+        case UiActionType.TAX:
           setMessageLog(
             (log) =>
               log +
               currentPlayerRef.current.name +
-              " has rolled " +
-              result +
-              (doubleDice ? ". That's a double!\n" : ".\n")
+              " pays " +
+              actionsState.actions[0].params[0] +
+              "$ to the pot. (Total pot: " +
+              actionsState.actions[0].params[1].toLocaleString() +
+              "$)\n"
           );
-          dispatch(nextAction());
-        }, 1000);
-      })();
+      }
     }
   }, [actionsState.actions, dispatch]);
 
-  const handleRollDice = () => {
-    if (isRolling || diceDisabled) {
+  const handleRollDice = (isJailRoll: boolean = false) => {
+    if (isRolling || (!isJailRoll && diceDisabled)) {
       return;
     }
     setIsRolling(true);
-    gameService.rollDice(gameState.gameId, dispatch);
+    if (isJailRoll) {
+      jailRoll.current = true;
+      gameService.jailRoll(gameState.gameId, dispatch);
+    } else {
+      gameService.rollDice(gameState.gameId, dispatch);
+    }
   };
 
   return (
     <StyledLeftPanel frameHeight={props.frameHeight}>
       <PlayerList />
+      <StyledDice onClick={(event: React.MouseEvent) => handleRollDice()}>
+        <Die
+          disabled={diceDisabled}
+          value={dieValues[0]}
+          rolling={isRolling}
+          dieNumber={1}
+        />
+        <Die
+          disabled={diceDisabled}
+          value={dieValues[1]}
+          rolling={isRolling}
+          dieNumber={2}
+        />
+      </StyledDice>
+      <MessageLog value={messageLog} />
       <div className="buttons">
         <button
           disabled={nextPlayerButtonDisabled}
@@ -123,8 +211,48 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
             gameService.endTurn(gameState.gameId, dispatch)
           }
         >
-          Next player
+          End turn
         </button>
+        {jailTurnsRemaining > 0 && gameState.gameStep === "TURN_BEGIN" && (
+          <div className="inJailOptions">
+            <button
+              onClick={(event: React.MouseEvent) =>
+                gameService.jailWait(gameState.gameId, dispatch)
+              }
+            >
+              Wait one turn ({jailTurnsRemaining} remaining)
+            </button>
+            <button
+              onClick={(event: React.MouseEvent) => {
+                setDiceDisabled(false);
+                handleRollDice(true);
+              }}
+            >
+              Try to roll doubles
+            </button>
+            <button
+              disabled={currentPlayerRef.current.cash < 50}
+              className={
+                currentPlayerRef.current.cash < 50 ? "disabled" : undefined
+              }
+              onClick={(event: React.MouseEvent) =>
+                gameService.jailPay(gameState.gameId, dispatch)
+              }
+            >
+              Pay 50$
+            </button>
+            <button
+              disabled={currentPlayerRef.current.gojfCards > 0}
+              className={
+                currentPlayerRef.current.gojfCards === 0
+                  ? "disabled"
+                  : undefined
+              }
+            >
+              Use "get out of jail free" card
+            </button>
+          </div>
+        )}
         {/* <button
           onClick={(event: React.MouseEvent) =>
             dispatch(advanceAllPlayersByOne())
@@ -144,26 +272,16 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           onClick={(event: React.MouseEvent) => dispatch(resetPlayerMock())}
         >
           Reset players
+        </button>
+        <button
+          onClick={(event: React.MouseEvent) => dispatch(allPlayersToJail())}
+        >
+          Put all players to jail
         </button> */}
         {/* <button onClick={() => setIsRolling(!isRolling)}>
           Toggle die roll
         </button> */}
       </div>
-      <StyledDice onClick={handleRollDice}>
-        <Die
-          disabled={diceDisabled}
-          value={dieValues[0]}
-          rolling={isRolling}
-          dieNumber={1}
-        />
-        <Die
-          disabled={diceDisabled}
-          value={dieValues[1]}
-          rolling={isRolling}
-          dieNumber={2}
-        />
-      </StyledDice>
-      <MessageLog value={messageLog} />
     </StyledLeftPanel>
   );
 };
@@ -198,8 +316,10 @@ const StyledLeftPanel = styled.div<{ frameHeight: number }>`
   animation-iteration-count: 1;
 
   .buttons {
-    position: absolute;
-    top: 700px;
+    button {
+      width: 100%;
+      margin: 5px 0px;
+    }
   }
 `;
 

@@ -1,3 +1,9 @@
+Choses à faire éventuellement
+    - Utiliser des clés de traduction pour les strings
+    
+
+
+
 Comment générer les données statiques au back-end?
     Propriétés
         - On a besoin d'un objet contenant toutes les propriétés avec leurs champs pour référence

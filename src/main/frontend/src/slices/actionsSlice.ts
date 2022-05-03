@@ -3,11 +3,10 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UiAction } from "models/uiAction";
 
 export interface ActionsState {
-  actions: UiAction[],
-  isAdvancing: boolean,
+  actions: UiAction[]
 }
 
-const initialState: ActionsState = {actions: [], isAdvancing: false};
+const initialState: ActionsState = {actions: [] };
 
 export const actionsSlice = createSlice({
   name: 'actions',
@@ -20,12 +19,9 @@ export const actionsSlice = createSlice({
       const actions = state.actions.slice(1);
       return {...state, actions: actions};
     },
-    setAdvancing: (state, action: PayloadAction<boolean>) => {
-      return {...state, isAdvancing: action.payload};
-    }
   },
 });
 
-export const { addActions, nextAction, setAdvancing } = actionsSlice.actions;
+export const { addActions, nextAction } = actionsSlice.actions;
 
 export default actionsSlice.reducer;

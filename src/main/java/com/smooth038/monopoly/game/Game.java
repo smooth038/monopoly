@@ -121,4 +121,11 @@ public class Game {
         return jackPot;
     }
 
+    public void incrementJackPot(int amount) {
+        this.jackPot += amount;
+    }
+
+    public void clearJackPot() {
+        this.jackPot = 0;
+    }
 }

@@ -47,16 +47,22 @@ export const centerCoordinates = (coordinates: Coordinates, tokenSize: number) =
 
 const STREET_OFFSET = 0.015;
 
+// an offset is applied when more than one player is on the same square
 export const getTokenOffset = (currentPlayer: Player, players: Player[]): TokenOffset => {
-  let playersOnSpace:Player[] = [];
+  let playersOnSpace : Player[] = [];
   for (let player of players) {
     if (player.position === currentPlayer.position) {
       playersOnSpace.push(player)
     }
   }
-  // console.log(playersOnSpace);
   if (currentPlayer.position === 10) {
-    return jailOffsets[playersOnSpace.length - 1][playersOnSpace.indexOf(currentPlayer)];
+    const playersInJail = [...playersOnSpace].filter((player) => player.isInJail);
+    const playersNotInJail = [...playersOnSpace].filter((player) => !player.isInJail);
+    if (!currentPlayer.isInJail) {
+      return jailVisitingOffsets[playersNotInJail.length - 1][playersNotInJail.indexOf(currentPlayer)];
+    } else {
+      return jailOffsets[playersInJail.length - 1][playersInJail.indexOf(currentPlayer)];
+    }
   }
   if (currentPlayer.position % 10 === 0) {
     return cornerOffsets[playersOnSpace.length - 1][playersOnSpace.indexOf(currentPlayer)];
@@ -78,6 +84,7 @@ export const getTokenOffset = (currentPlayer: Player, players: Player[]): TokenO
   return {x: 0, y: 0};
 }
 
+// jail (just visiting)
 const JAIL_LEFT = -0.049;
 const JAIL_BOTTOM = 0.047;
 const JAIL_H_NUDGE = 0.019;
@@ -86,7 +93,7 @@ const JAIL_PACKED_5 = 0.048;
 const JAIL_PACKED_7 = 0.035;
 const JAIL_PACKED_8 = 0.03;
 
-const jailOffsets: Array<Array<TokenOffset>> = [
+const jailVisitingOffsets: Array<Array<TokenOffset>> = [
   [{x: JAIL_H_NUDGE, y: JAIL_BOTTOM}],
   [{x: JAIL_H_NUDGE, y: JAIL_BOTTOM}, {x: JAIL_LEFT, y: -JAIL_V_NUDGE}],
   [{x: 2*JAIL_H_NUDGE, y: JAIL_BOTTOM}, {x: JAIL_LEFT, y: -JAIL_V_NUDGE}, {x: -JAIL_H_NUDGE, y: JAIL_BOTTOM}],
@@ -97,8 +104,9 @@ const jailOffsets: Array<Array<TokenOffset>> = [
   [{x: JAIL_LEFT + 3*JAIL_PACKED_7, y: JAIL_BOTTOM}, {x: JAIL_LEFT, y: JAIL_BOTTOM - 3*JAIL_PACKED_7}, {x: JAIL_LEFT + 2*JAIL_PACKED_7, y: JAIL_BOTTOM}, {x: JAIL_LEFT, y: JAIL_BOTTOM - 2*JAIL_PACKED_7}, {x: JAIL_LEFT + JAIL_PACKED_7, y: JAIL_BOTTOM}, {x: JAIL_LEFT, y: JAIL_BOTTOM - JAIL_PACKED_7}, {x: JAIL_LEFT, y: JAIL_BOTTOM}, {x: JAIL_LEFT + JAIL_PACKED_8, y: JAIL_BOTTOM - JAIL_PACKED_8}],
 ]
 
-const CORNER_H_NUDGE = 0.019;
-const CORNER_V_NUDGE = 0.01667;
+// corners
+const CORNER_H_NUDGE = 0.022;
+const CORNER_V_NUDGE = 0.022;
 
 const cornerOffsets: Array<Array<TokenOffset>> = [
   [{x: 0, y: 0}],
@@ -109,9 +117,25 @@ const cornerOffsets: Array<Array<TokenOffset>> = [
   [{x: -2*CORNER_H_NUDGE, y: -CORNER_V_NUDGE}, {x: 0, y: -CORNER_V_NUDGE}, {x: 2*CORNER_H_NUDGE, y: -CORNER_V_NUDGE}, {x: -2*CORNER_H_NUDGE, y: CORNER_V_NUDGE}, {x: 0, y: CORNER_V_NUDGE}, {x: 2*CORNER_H_NUDGE, y: CORNER_V_NUDGE}],
   [{x: -CORNER_H_NUDGE, y: -2*CORNER_V_NUDGE}, {x: CORNER_H_NUDGE, y: -2*CORNER_V_NUDGE}, {x: -2*CORNER_H_NUDGE, y: 0}, {x: 0, y: 0}, {x: 2*CORNER_H_NUDGE, y: 0}, {x: -CORNER_H_NUDGE, y: 2*CORNER_V_NUDGE}, {x: CORNER_H_NUDGE, y: 2*CORNER_V_NUDGE}],
   [{x: -2*CORNER_H_NUDGE, y: -2*CORNER_V_NUDGE}, {x: 0, y: -2*CORNER_V_NUDGE}, {x: 2*CORNER_H_NUDGE, y: -2*CORNER_V_NUDGE}, {x: -2*CORNER_H_NUDGE, y: 0}, {x: 0, y: 0}, {x: 2*CORNER_H_NUDGE, y: 0}, {x: -CORNER_H_NUDGE, y: 2*CORNER_V_NUDGE}, {x: CORNER_H_NUDGE, y: 2*CORNER_V_NUDGE}],
-]
+];  
 
+// in jail
+const IN_JAIL_CENTER = 0.0211;
+const IN_JAIL_PACKED_2 = 0.024;
+const IN_JAIL_PACKED_3 = 0.016;
 
+const jailOffsets: Array<Array<TokenOffset>> = [
+  [{x: 0, y: 0}],
+  [{x: -IN_JAIL_PACKED_2, y: 0}, {x: IN_JAIL_PACKED_2, y: 0}],
+  [{x: -IN_JAIL_PACKED_2, y: -IN_JAIL_PACKED_2}, {x: IN_JAIL_PACKED_2, y: -IN_JAIL_PACKED_2}, {x: 0, y: IN_JAIL_PACKED_2}],
+  [{x: -IN_JAIL_PACKED_2, y: -IN_JAIL_PACKED_2}, {x: IN_JAIL_PACKED_2, y: -IN_JAIL_PACKED_2}, {x: -IN_JAIL_PACKED_2, y: IN_JAIL_PACKED_2}, {x: IN_JAIL_PACKED_2, y: IN_JAIL_PACKED_2}],
+  [{x: -2*IN_JAIL_PACKED_3, y: -IN_JAIL_PACKED_2}, {x: 0, y: -IN_JAIL_PACKED_2}, {x: 2*IN_JAIL_PACKED_3, y: -IN_JAIL_PACKED_2}, {x: -IN_JAIL_PACKED_2, y: IN_JAIL_PACKED_2}, {x: IN_JAIL_PACKED_2, y: IN_JAIL_PACKED_2}],
+  [{x: -2*IN_JAIL_PACKED_3, y: -IN_JAIL_PACKED_2}, {x: 0, y: -IN_JAIL_PACKED_2}, {x: 2*IN_JAIL_PACKED_3, y: -IN_JAIL_PACKED_2}, {x: -2*IN_JAIL_PACKED_3, y: IN_JAIL_PACKED_2}, {x: 0, y: IN_JAIL_PACKED_2}, {x: 2*IN_JAIL_PACKED_3, y: IN_JAIL_PACKED_2}],
+  [{x: -IN_JAIL_PACKED_2, y: -2*IN_JAIL_PACKED_3}, {x: IN_JAIL_PACKED_2, y: -2*IN_JAIL_PACKED_3}, {x: -2*IN_JAIL_PACKED_3, y: 0}, {x: 0, y: 0}, {x: 2*IN_JAIL_PACKED_3, y: 0}, {x: -IN_JAIL_PACKED_2, y: 2*IN_JAIL_PACKED_3}, {x: IN_JAIL_PACKED_2, y: 2*IN_JAIL_PACKED_3}],
+  [{x: -2*IN_JAIL_PACKED_3, y: -2*IN_JAIL_PACKED_3}, {x: 0, y: -2*IN_JAIL_PACKED_3}, {x: 2*IN_JAIL_PACKED_3, y: -2*IN_JAIL_PACKED_3}, {x: -2*IN_JAIL_PACKED_3, y: 0}, {x: 0, y: 0}, {x: 2*IN_JAIL_PACKED_3, y: 0}, {x: -IN_JAIL_PACKED_2, y: 2*IN_JAIL_PACKED_3}, {x: IN_JAIL_PACKED_2, y: 2*IN_JAIL_PACKED_3}],
+].map((nbPlayer) => nbPlayer.map((nthPlayer): TokenOffset => {return {x: nthPlayer.x + IN_JAIL_CENTER, y: nthPlayer.y - IN_JAIL_CENTER};}));;  
+
+// north or south
 const NS_H_NUDGE = 0.019;
 const NS_V_NUDGE = 0.01667;
 
@@ -126,6 +150,7 @@ const northSouthOffsets: Array<Array<TokenOffset>> = [
   [{x: -NS_H_NUDGE, y: -3*NS_V_NUDGE}, {x: NS_H_NUDGE, y: -3*NS_V_NUDGE}, {x: -NS_H_NUDGE, y: -NS_V_NUDGE}, {x: NS_H_NUDGE, y: -NS_V_NUDGE}, {x: -NS_H_NUDGE, y: NS_V_NUDGE}, {x: NS_H_NUDGE, y: NS_V_NUDGE}, {x: -NS_H_NUDGE, y: 3*NS_V_NUDGE}, {x: NS_H_NUDGE, y: 3*NS_V_NUDGE}],
 ]
 
+// east or west
 const EW_H_NUDGE = 0.01667;
 const EW_V_NUDGE = 0.019;
 

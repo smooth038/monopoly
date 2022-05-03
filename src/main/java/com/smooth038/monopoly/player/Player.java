@@ -35,7 +35,6 @@ public class Player {
     private int cash = 1500;
 
     private boolean isInJail = false;
-    private boolean canRoll = false;
     @Column(columnDefinition = "TINYINT")
     private short jailTurns = 0;
 
@@ -101,14 +100,6 @@ public class Player {
         this.isInJail = isInJail;
     }
 
-    public boolean canRoll() {
-        return canRoll;
-    }
-
-    public void setCanRoll(boolean canRoll) {
-        this.canRoll = canRoll;
-    }
-
     public short getJailTurns() {
         return jailTurns;
     }
@@ -117,10 +108,37 @@ public class Player {
         this.jailTurns = jailTurns;
     }
 
+    public void sendToJail() {
+        this.isInJail = true;
+        this.jailTurns = 3;
+        this.position = 10;
+    }
+
+    public void freeFromJail() {
+        this.isInJail = false;
+        this.jailTurns = 0;
+    }
+
+    public void decrementJailTurns() {
+        this.jailTurns -= 1;
+    }
+
+    public boolean hasZeroJailTurns() {
+        return this.jailTurns == 0;
+    }
+
+    public void cashIn(int amount) {
+        this.cash += amount;
+    }
+
+    public void cashOut(int amount) {
+        this.cash -= amount;
+    }
+
     @Override
     public String toString() {
         return "Player{" + "id=" + id + ", game=" + game + ", name='" + name + '\'' + ", token=" + token +
-                ", position=" + position + ", cash=" + cash + ", isInJail=" + isInJail + ", canRoll=" + canRoll +
+                ", position=" + position + ", cash=" + cash + ", isInJail=" + isInJail + ", " +
                 ", jailTurns=" + jailTurns + ", getOutOfJailFreeCards=" + getOutOfJailFreeCards + '}';
     }
 }
