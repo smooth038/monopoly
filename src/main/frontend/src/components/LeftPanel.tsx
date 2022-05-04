@@ -7,7 +7,6 @@ import { Player } from "models/player";
 import { PlayerList } from "components/PlayerList";
 import { RootState } from "app/store";
 import { UiActionType } from "models/uiAction";
-import { current } from "@reduxjs/toolkit";
 import { gameService } from "service/gameService";
 import { nextAction } from "slices/actionsSlice";
 import styled from "styled-components";
@@ -18,7 +17,7 @@ export interface LeftPanelProps {
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common", "spaces"]);
   const gameState = useSelector((state: RootState) => state.game);
   const [gameHasBegun, setGameHasBegun] = useState(false);
   const currentPlayerRef = useRef<Player>(
@@ -28,6 +27,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   const [dieValues, setDieValues] = useState([1, 1]);
   const [isRolling, setIsRolling] = useState(false);
   const jailRoll = useRef(false);
+  const hasAdvanced = useRef(false);
   const [diceDisabled, setDiceDisabled] = useState(false);
   const [nextPlayerButtonDisabled, setNextPlayerButtonDisabled] =
     useState(true);
@@ -56,10 +56,35 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           setNextPlayerButtonDisabled(true);
           break;
         case "TURN_END":
+          console.log("TURN_END");
           setNextPlayerButtonDisabled(false);
           setDiceDisabled(true);
+          if (hasAdvanced.current) {
+            hasAdvanced.current = false;
+            if (!currentPlayerRef.current.isInJail) {
+              setMessageLog(
+                (log) =>
+                  log +
+                  t("log.landsOn", {
+                    player: currentPlayerRef.current.name,
+                    space: t(`spaces:${currentPlayerRef.current.position}`),
+                  })
+              );
+            }
+          }
           break;
         case "RE_ROLL":
+          if (hasAdvanced.current) {
+            hasAdvanced.current = false;
+            setMessageLog(
+              (log) =>
+                log +
+                t("log.landsOn", {
+                  player: currentPlayerRef.current.name,
+                  space: t(`spaces:${currentPlayerRef.current.position}`),
+                })
+            );
+          }
           setDiceDisabled(false);
           break;
         default:
@@ -167,6 +192,25 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
               dispatch(nextAction());
             }, 1000);
           })();
+          break;
+        case UiActionType.ADVANCE:
+          hasAdvanced.current = true;
+          const distance = actionsState.actions[0].params[0];
+          if (distance > 0) {
+            setMessageLog(
+              (log) =>
+                log +
+                t("log.advance", {
+                  player: currentPlayerRef.current.name,
+                  count: distance,
+                })
+            );
+          } else {
+            setMessageLog(
+              (log) =>
+                log + t("log.goBack", { player: currentPlayerRef.current.name })
+            );
+          }
           break;
         case UiActionType.JAIL_IN:
           setMessageLog(

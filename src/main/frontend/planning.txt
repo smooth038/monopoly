@@ -1,5 +1,5 @@
 Choses à faire éventuellement
-    - Utiliser des clés de traduction pour les strings
+    - Ajouter des tests?
     
 
 

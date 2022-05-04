@@ -11,8 +11,8 @@ import { useDispatch } from "react-redux";
 export const Controller = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const footerHeight = 0;
-  const [isNewGameModalVisible, setNewGameModalVisible] = useState(true);
-  const [isMainVisible, setMainVisible] = useState(false);
+  const [isNewGameModalVisible, setNewGameModalVisible] = useState(false);
+  const [isMainVisible, setMainVisible] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {

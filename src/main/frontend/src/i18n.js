@@ -8,17 +8,14 @@ i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
     // translation file path
     loadPath: "/locales/{{lng}}/{{ns}}.json"
   },
-  fallbackLng: "fr",
-  lng: "fr",
+  fallbackLng: "en",
+  lng: "en",
   // disabled in production
   debug: false,
-  ns: ["common", "squares"],
+  ns: ["common", "spaces", "properties"],
   interpolation: {
     escapeValue: false,
     formatSeparator: ",",
-  },
-  react: {
-    wait: true,
   },
 })
 

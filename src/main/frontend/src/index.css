@@ -13,6 +13,16 @@
   src: url(assets/fonts/kabel-book.otf);
 }
 
+@font-face {
+  font-family: "kabale-medium";
+  src: url(assets/fonts/kabale-medium.ttf);
+}
+
+@font-face {
+  font-family: "kabob-light";
+  src: url(assets/fonts/kabob-light.ttf);
+}
+
 body {
   background-image: url("assets/wood.jpg");
   background-size: cover;

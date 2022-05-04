@@ -3,6 +3,7 @@ import {
   getSquare,
   selectableSquares,
   spaceCoordinates,
+  spaceToProperty,
 } from "helpers/boardSpaceHelper";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -21,6 +22,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { Player } from "models/player";
+import { PropertyCard } from "./PropertyCard";
 import { RootState } from "app/store";
 import { UiActionType } from "models/uiAction";
 import boardImage from "assets/board-high-res.jpg";
@@ -118,6 +120,19 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
     [players]
   );
 
+  const getPropertyCard = (square: number) => {
+    const property = spaceToProperty.get(square);
+    if (property) {
+      return (
+        <PropertyCard
+          propertyType={property.type}
+          rank={property.rank}
+          boardSize={0.95 * props.frameHeight}
+        />
+      );
+    }
+  };
+
   return (
     <StyledBoard frameHeight={props.frameHeight} onClick={handleBoardClick}>
       <div className="lighting" />
@@ -138,6 +153,7 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
             />
           );
         })()}
+      {highlightVisible && getPropertyCard(highlightedSquare)}
       {players.map((player) => {
         const { x1, y1 } = getTokenCoordinates(player);
         return (

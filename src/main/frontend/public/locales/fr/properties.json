@@ -1,0 +1,70 @@
+{
+  "titleDeed": "Titre de propriété",
+  "rent": "LOCATION {{rent}}$",
+  "withHouse_one": "Avec {{count}} maison",
+  "withHouse_other": "Avec {{count}} maisons",
+  "withHotel": "Avec HÔTEL {{rent}}$",
+  "houseRent": "{{rent}}$",
+  "mortgageValue": "Valeur de l'hypothèque {{value}}$",
+  "houseCost": "Coût des maisons {{cost}}$ chacune",
+  "hotelCost": "Hôtels, {{cost}}$ plus 4 maisons",
+  "footnote": "Si un joueur possède TOUS les lots de tout groupe de même couleur, la location est doublée sur les lots non améliorés de ce groupe.",
+  "railroads": {
+    "rent_one": "LOCATION",
+    "rent_other": "Si on possède {{count}} c. de f."
+  },
+  "utilities": {
+    "rent1": "Si on possède un \"service public\", la location est de 4 fois le montant indiqué par les dés.",
+    "rent2": "Si on possède deux \"services publics\", la location est de 10 fois le montant indiqué par les dés."
+  },
+  "propertyName": {
+    "railroads": {
+      "1": "Chemin de fer Readin",
+      "2": "Chemin de fer Pennsylvanie",
+      "3": "Chemin de fer B. & O.",
+      "4": "Chemin de fer Petit Réseau"
+    },
+    "utilities": {
+      "1": "Compagnie d'électricité",
+      "2": "Aqueduc"
+    },
+    "darkPurple": {
+      "1": "Avenue de la Méditerranée",
+      "2": "Avenue de la Baltique"
+    },
+    "lightBlue": {
+      "1": "Avenue de l'Orient",  
+      "2": "Avenue Vermont",
+      "3": "Avenue Connecticut"
+    },
+    "purple": {
+      "1": "Place Saint-Charles",
+      "2": "Avenue des États-Unis",
+      "3": "Avenue de la Virginie"
+    },
+    "orange": {
+      "1": "Place Saint-Jacques",
+      "2": "Avenue Tennessee",
+      "3": "Avenue New York"
+    },
+    "red": {
+      "1": "Avenue Kentucky",
+      "2": "Avenue de l'Indiana",
+      "3": "Avenue Illinois"
+    },
+    "yellow": {
+      "1": "Avenue de l'Atlantique",
+      "2": "Avenue Ventnor",
+      "3": "Jardins Marvin"
+    },
+    "green": {
+      "1": "Avenue du Pacifique",
+      "2": "Avenue Caroline du Nord",
+      "3": "Avenue Pennsylvanie"
+    },
+    "blue": {
+      "1": "Place du parc",
+      "2": "Promenade"
+    }
+  }
+}

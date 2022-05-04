@@ -1,3 +1,5 @@
+import { PropertyType } from "./propertyHelper";
+
 export interface Coordinates {
   x1: number;
   y1: number;
@@ -88,4 +90,35 @@ export const spaceCoordinates = new Map<number, Coordinates>([
   [37, {x1: 0.862667, y1:0.621833, x2: 1.003167, y2: 0.707167}],
   [38, {x1: 0.862667, y1:0.704167, x2: 1.003167, y2: 0.786167}],
   [39, {x1: 0.862667, y1:0.783000, x2: 1.003167, y2: 0.867167}],
-])
+]);
+
+export const spaceToProperty = new Map<number, { type: PropertyType, rank: number}>([
+  [1, { type: "darkPurple", rank: 1 }],
+  [3, { type: "darkPurple", rank: 2 }],
+  [5, { type: "railroads", rank: 1 }],
+  [6, { type: "lightBlue", rank: 1 }],
+  [8, { type: "lightBlue", rank: 2 }],
+  [9, { type: "lightBlue", rank: 3 }],
+  [11, { type: "purple", rank: 1 }],
+  [12, { type: "utilities", rank: 1 }],
+  [13, { type: "purple", rank: 2 }],
+  [14, { type: "purple", rank: 3 }],
+  [15, { type: "railroads", rank: 2 }],
+  [16, { type: "orange", rank: 1 }],
+  [18, { type: "orange", rank: 2 }],
+  [19, { type: "orange", rank: 3 }],
+  [21, { type: "red", rank: 1 }],
+  [23, { type: "red", rank: 2 }],
+  [24, { type: "red", rank: 3 }],
+  [25, { type: "railroads", rank: 3 }],
+  [26, { type: "yellow", rank: 1 }],
+  [27, { type: "yellow", rank: 2 }],
+  [28, { type: "utilities", rank: 2 }],
+  [29, { type: "yellow", rank: 3 }],
+  [31, { type: "green", rank: 1 }],
+  [32, { type: "green", rank: 2 }],
+  [34, { type: "green", rank: 3 }],
+  [35, { type: "railroads", rank: 4}],
+  [37, { type: "blue", rank: 1 }],
+  [39, { type: "blue", rank: 2 }]
+]);

@@ -1,0 +1,70 @@
+{
+  "titleDeed": "Title deed",
+  "rent": "RENT ${{rent}}",
+  "withHouse_one": "With {{count}} House",
+  "withHouse_other": "With {{count}} Houses",
+  "withHotel": "With HOTEL ${{rent}}",
+  "houseRent": "${{rent}}",
+  "mortgageValue": "Mortgage Value ${{value}}",
+  "houseCost": "Houses cost ${{cost}} each",
+  "hotelCost": "Hotels, ${{cost}} plus 4 houses",
+  "footnote": "If a player owns all the sites of any color group, the rent is doubled on unimproved sites in that group",
+  "railroads": {
+    "rent_one": "RENT",
+    "rent_other": "If {{count}} R.R.'s are owned"
+  },
+  "utilities": {
+    "rent1": "If one \"Utility\" is owned, rent is 4 times amount shown on dice.",
+    "rent2": "If both \"Utilities\" are owned, rent is 10 times amount shown on dice."
+  },
+  "propertyName": {
+    "railroads": {
+      "1": "Reading Railroad",
+      "2": "Pennsylvania R.R.",
+      "3": "B. & O. Railroad",
+      "4": "Short Line R.R."
+    },
+    "utilities": {
+      "1": "Electric Company",
+      "2": "Water Works"
+    },
+    "darkPurple": {
+      "1": "Mediterranean Avenue",
+      "2": "Baltic Avenue"
+    },
+    "lightBlue": {
+      "1": "Oriental Avenue",  
+      "2": "Vermont Avenue",
+      "3": "Connecticut Avenue"
+    },
+    "purple": {
+      "1": "St. Charles Place",
+      "2": "States Avenue",
+      "3": "Virginia Avenue"
+    },
+    "orange": {
+      "1": "St. James Place",
+      "2": "Tennessee Avenue",
+      "3": "New York Avenue"
+    },
+    "red": {
+      "1": "Kentucky Avenue",
+      "2": "Indiana Avenue",
+      "3": "Illinois Avenue"
+    },
+    "yellow": {
+      "1": "Atlantic Avenue",
+      "2": "Ventnor Avenue",
+      "3": "Marvin Gardens"
+    },
+    "green": {
+      "1": "Pacific Avenue",
+      "2": "North Carolina Avenue",
+      "3": "Pennsylvanie Avenue"
+    },
+    "blue": {
+      "1": "Park Place",
+      "2": "Boardwalk"
+    }
+  }
+}
