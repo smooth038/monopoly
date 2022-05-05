@@ -3,7 +3,6 @@ import { Player } from "models/player";
 import bootTokenImg from "assets/tokens/250x250/boot.png";
 import carTokenImg from "assets/tokens/250x250/car.png";
 import catTokenImg from "assets/tokens/250x250/cat.png";
-import { current } from "@reduxjs/toolkit";
 import dogTokenImg from "assets/tokens/250x250/dog.png";
 import duckTokenImg from "assets/tokens/250x250/duck.png";
 import hatTokenImg from "assets/tokens/250x250/hat.png";

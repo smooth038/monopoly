@@ -5,6 +5,9 @@ import {
 } from "helpers/propertyHelper";
 
 import React from "react";
+import faucetImage from "assets/faucet.gif";
+import lightbulbImage from "assets/lightbulb.gif";
+import railroadImage from "assets/railroad.png";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
@@ -29,12 +32,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = (
     }
   };
 
+  const getPictoImage = () => {
+    switch (props.propertyType) {
+      case "railroads":
+        return { src: railroadImage, alt: "locomotive" };
+      case "utilities":
+        return props.rank === 1
+          ? { src: lightbulbImage, alt: "light bulb" }
+          : { src: faucetImage, alt: "faucet" };
+    }
+  };
+
   return (
     <StyledPropertyCard
       color={colors.get(props.propertyType)}
       boardSize={props.boardSize}
     >
-      {isTerrainType(props.propertyType) && (
+      {isTerrainType(props.propertyType) ? (
         <>
           <div className="title">
             <h4 className="titleDeed">{t(`titleDeed`)}</h4>
@@ -50,10 +64,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = (
             </div>
             {[...Array(4)].map((e, i) => (
               <div className="line" key={i + 1}>
-                <div className="houseRentText">
+                <div className="rentText">
                   {t("withHouse", { count: i + 1 })}
                 </div>
-                <div className="houseRent">
+                <div className="rentValue">
                   {t("houseRent", {
                     rent: getPropertyData()[i + 1],
                   })}
@@ -73,6 +87,50 @@ export const PropertyCard: React.FC<PropertyCardProps> = (
               {t("hotelCost", { cost: getPropertyData()[7] })}
             </div>
             <div className="footnote">{t("footnote")}</div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="pictoContainer">
+            <img alt="" {...getPictoImage()} className="picto"></img>
+          </div>
+          <div className="content nonTerrainContent">
+            <hr />
+            <h2 className="nonTerrainPropertyName">
+              {t(`propertyName.${props.propertyType}.${props.rank}`)}
+            </h2>
+            <hr />
+            {props.propertyType === "railroads" ? (
+              <>
+                <div className="railroadRents">
+                  {[...Array(4)].map((e, i) => (
+                    <div className="line" key={"rrRent" + i + 1}>
+                      <div className="rentText">
+                        {t("railroads.rent", { count: i + 1 })}
+                      </div>
+                      <div className="rentValue">
+                        {t("houseRent", {
+                          rent: 25 * Math.pow(2, i),
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mortgageValue railroad">
+                  {t("mortgageValue", { value: 100 })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="utilityRent">
+                  <div className="left-align">{t("utilities.rent1")}</div>
+                  <div className="left-align">{t("utilities.rent2")}</div>
+                </div>
+                <div className="mortgageValue">
+                  {t("mortgageValue", { value: 75 })}
+                </div>
+              </>
+            )}
           </div>
         </>
       )}
@@ -104,6 +162,7 @@ const StyledPropertyCard = styled.div<{
   border: 2px solid black;
   box-shadow: 0 0 0 ${(props) => props.boardSize / 100 + "px"} white,
     0 0 0 ${(props) => props.boardSize / 100 + 1 + "px"} #ccc;
+  overflow: hidden;
 
   .title {
     margin: ${(props) => props.boardSize / 100 + "px"};
@@ -114,7 +173,7 @@ const StyledPropertyCard = styled.div<{
     gap: ${(props) => props.boardSize / 100 + "px"};
     background-color: ${(props) => props.color};
     color: ${(props) =>
-      props.color && ["#420144", "#0e32ff"].includes(props.color)
+      props.color && ["#420144", "#fe15bc", "#0e32ff"].includes(props.color)
         ? "white"
         : "black"};
     border: ${(props) =>
@@ -146,7 +205,7 @@ const StyledPropertyCard = styled.div<{
     padding: 0px ${(props) => props.boardSize / 20 + "px"};
     display: flex;
     column-gap: ${(props) => props.boardSize / 200 + "px"};
-    .houseRentText {
+    .rentText {
       flex-grow: 1;
       overflow-x: hidden;
       white-space: nowrap;
@@ -155,7 +214,7 @@ const StyledPropertyCard = styled.div<{
         white-space: nowrap;
       }
     }
-    .houseRent {
+    .rentValue {
       text-align: right;
     }
   }
@@ -165,5 +224,47 @@ const StyledPropertyCard = styled.div<{
   .footnote {
     margin: ${(props) => props.boardSize / 50 + "px"};
     font-size: ${(props) => props.boardSize / 48 + "px"};
+  }
+
+  .pictoContainer {
+    margin: ${(props) => props.boardSize / 40 + "px"};
+  }
+  .picto {
+    height: ${(props) => props.boardSize / 7 + "px"};
+  }
+
+  .nonTerrainPropertyName {
+    margin: ${(props) => props.boardSize / 200 + "px"};
+  }
+
+  hr {
+    margin: 0 auto;
+  }
+
+  .nonTerrainContent {
+    padding: 0px ${(props) => props.boardSize / 30 + "px"};
+  }
+
+  .railroadRents {
+    padding: ${(props) => props.boardSize / 50 + "px"} 0px;
+  }
+
+  .railroadRents > .line {
+    margin: ${(props) => props.boardSize / 60 + "px"} auto;
+    padding: 0px;
+  }
+
+  .utilityRent {
+    margin: ${(props) => props.boardSize / 60 + "px"} 0px;
+    height: ${(props) => props.boardSize / 4 + "px"};
+    display: flex;
+    flex-direction: column;
+    gap: ${(props) => props.boardSize / 50 + "px"};
+    justify-content: center;
+  }
+
+  .left-align {
+    text-align: left;
+    text-indent: ${(props) => props.boardSize / 50 + "px"};
   }
 `;
