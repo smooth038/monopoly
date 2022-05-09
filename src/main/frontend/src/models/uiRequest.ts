@@ -1,7 +1,7 @@
 export interface UiRequest {
-  gameId: number,
-  type: UiRequestType,
-  params: number[],
+  gameId: number;
+  type: UiRequestType;
+  params: number[];
 }
 
 export enum UiRequestType {

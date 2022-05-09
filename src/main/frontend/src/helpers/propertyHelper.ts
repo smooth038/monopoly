@@ -1,14 +1,13 @@
-
 export const propertyData = new Map<TerrainType, Array<Array<number>>>([
   [
-    "darkPurple", 
+    'darkPurple',
     [
       [2, 10, 30, 90, 160, 250, 30, 50],
       [4, 20, 60, 180, 320, 450, 30, 50],
     ],
   ],
   [
-    "lightBlue", 
+    'lightBlue',
     [
       [6, 30, 90, 270, 400, 550, 50, 50],
       [6, 30, 90, 270, 400, 550, 50, 50],
@@ -16,7 +15,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "purple", 
+    'purple',
     [
       [10, 50, 150, 450, 625, 750, 70, 100],
       [10, 50, 150, 450, 625, 750, 70, 100],
@@ -24,7 +23,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "orange", 
+    'orange',
     [
       [14, 70, 200, 550, 750, 950, 90, 100],
       [14, 70, 200, 550, 750, 950, 90, 100],
@@ -32,7 +31,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "red", 
+    'red',
     [
       [18, 90, 250, 700, 875, 1050, 110, 150],
       [18, 90, 250, 700, 875, 1050, 110, 150],
@@ -40,7 +39,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "yellow",
+    'yellow',
     [
       [22, 110, 330, 800, 975, 1150, 130, 150],
       [22, 110, 330, 800, 975, 1150, 130, 150],
@@ -48,7 +47,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "green",
+    'green',
     [
       [26, 130, 390, 900, 1100, 1275, 150, 200],
       [26, 130, 390, 900, 1100, 1275, 150, 200],
@@ -56,7 +55,7 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
     ],
   ],
   [
-    "blue",
+    'blue',
     [
       [35, 175, 500, 1100, 1300, 1500, 175, 200],
       [50, 200, 600, 1400, 1700, 2000, 200, 200],
@@ -65,36 +64,40 @@ export const propertyData = new Map<TerrainType, Array<Array<number>>>([
 ]);
 
 const PROPERTY_TYPES = [
-  "darkPurple",
-  "lightBlue",
-  "purple",
-  "orange",
-  "red",
-  "yellow",
-  "green",
-  "blue",
-  "railroads",
-  "utilities",
+  'darkPurple',
+  'lightBlue',
+  'purple',
+  'orange',
+  'red',
+  'yellow',
+  'green',
+  'blue',
+  'railroads',
+  'utilities',
 ] as const;
 
 const TERRAIN_TYPES = [
-  "darkPurple",
-  "lightBlue",
-  "purple",
-  "orange",
-  "red",
-  "yellow",
-  "green",
-  "blue",
+  'darkPurple',
+  'lightBlue',
+  'purple',
+  'orange',
+  'red',
+  'yellow',
+  'green',
+  'blue',
 ] as const;
 
 export type PropertyType = typeof PROPERTY_TYPES[number];
 export type TerrainType = typeof TERRAIN_TYPES[number];
 
-export function isPropertyType(value: string | TerrainType): value is PropertyType {
+export function isPropertyType(
+  value: string | TerrainType
+): value is PropertyType {
   return PROPERTY_TYPES.includes(value as PropertyType);
 }
 
-export function isTerrainType(value: string | PropertyType): value is TerrainType {
+export function isTerrainType(
+  value: string | PropertyType
+): value is TerrainType {
   return TERRAIN_TYPES.includes(value as TerrainType);
 }

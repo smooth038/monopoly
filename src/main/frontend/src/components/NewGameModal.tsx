@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Token, tokenImages } from "helpers/tokenHelper";
+import { Token, tokenImages } from 'helpers/tokenHelper';
 
-import { PlayerInfo } from "models/player";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import { PlayerInfo } from 'models/player';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
 export interface NewGameModalProps {
   onStart: (players: PlayerInfo[]) => void;
@@ -12,12 +12,12 @@ export interface NewGameModalProps {
 export const NewGameModal: React.FC<NewGameModalProps> = (
   props: NewGameModalProps
 ) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation('common');
   const [numberOfPlayers, setNumberOfPlayers] = useState(2);
   const [players, setPlayers] = useState<Array<{ name: string; token: Token }>>(
     [
-      { name: "", token: Token.BOOT },
-      { name: "", token: Token.CAR },
+      { name: '', token: Token.BOOT },
+      { name: '', token: Token.CAR },
     ]
   );
 
@@ -38,7 +38,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
           const numberOfPlayersToAdd = newNumberOfPlayers - numberOfPlayers;
           for (let i = 0; i < numberOfPlayersToAdd; i++) {
             newPlayers.push({
-              name: "",
+              name: '',
               token: Object.values(Token)[i + numberOfPlayers],
             });
           }
@@ -69,28 +69,26 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
     setPlayers(newPlayers);
   };
 
-  const handleNewGameButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleNewGameButtonClick = () => {
     const playerNames: string[] = [];
     const playerTokens: Token[] = [];
     for (let i = 0; i < numberOfPlayers; i++) {
       if (players[i].name.length > 25) {
-        alert(t("newGameModal.nameTooLong"));
+        alert(t('newGameModal.nameTooLong'));
         return;
       }
       if (!players[i].name) {
-        alert(t("newGameModal.emptyName"));
+        alert(t('newGameModal.emptyName'));
         return;
       }
       if (playerNames.includes(players[i].name)) {
-        alert(t("newGameModal.duplicateNames"));
+        alert(t('newGameModal.duplicateNames'));
         return;
       } else {
         playerNames.push(players[i].name);
       }
       if (playerTokens.includes(players[i].token)) {
-        alert(t("newGameModal.duplicateTokens"));
+        alert(t('newGameModal.duplicateTokens'));
         return;
       } else {
         playerTokens.push(players[i].token);
@@ -112,12 +110,12 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
 
   return (
     <StyledNewGameModal>
-      <h1>{t("newGameModal.title")}</h1>
+      <h1>{t('newGameModal.title')}</h1>
       <form>
         <StyledRow>
           <StyledNumberOfPlayers>
             <label>
-              {t("newGameModal.numberOfPlayers")}&nbsp;&nbsp;
+              {t('newGameModal.numberOfPlayers')}&nbsp;&nbsp;
               <input
                 type="number"
                 onChange={handleNumberOfPlayersChange}
@@ -133,7 +131,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                 <StyledPlayerName>
                   <input
                     type="text"
-                    placeholder={t("newGameModal.nameInputPlaceholder")}
+                    placeholder={t('newGameModal.nameInputPlaceholder')}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       handlePlayerNameChange(event, playerIndex)
                     }
@@ -142,12 +140,12 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                 <StyledTokenSelector>
                   {Object.values(Token).map((token, tokenIndex) => (
                     <div
-                      key={playerIndex.toString() + "-" + tokenIndex.toString()}
+                      key={playerIndex.toString() + '-' + tokenIndex.toString()}
                     >
                       <input
                         type="radio"
-                        id={"player" + playerIndex + "-token"}
-                        name={"player" + playerIndex + "-token"}
+                        id={'player' + playerIndex + '-token'}
+                        name={'player' + playerIndex + '-token'}
                         value={token}
                         checked={
                           (!players[playerIndex] &&
@@ -157,10 +155,8 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
                         readOnly
                       />
                       <label
-                        htmlFor={"player" + playerIndex + "-token"}
-                        onClick={(
-                          event: React.MouseEvent<HTMLLabelElement>
-                        ) => {
+                        htmlFor={'player' + playerIndex + '-token'}
+                        onClick={() => {
                           handlePlayerTokenChange(playerIndex, tokenIndex);
                         }}
                       >
@@ -175,7 +171,7 @@ export const NewGameModal: React.FC<NewGameModalProps> = (
         ))}
         <StyledFormButtons>
           <button type="button" onClick={handleNewGameButtonClick}>
-            {t("newGameModal.startGameButtonCaption")}
+            {t('newGameModal.startGameButtonCaption')}
           </button>
         </StyledFormButtons>
       </form>
@@ -228,7 +224,7 @@ const StyledPlayerEntry = styled.div`
   ::before {
     width: 1em;
     counter-increment: playerNumber;
-    content: counter(playerNumber) ")";
+    content: counter(playerNumber) ')';
     padding-right: 0.5em;
     display: flex;
     align-items: center;
@@ -256,7 +252,7 @@ const StyledTokenSelector = styled.div`
   display: flex;
   margin-left: 8px;
   white-space: nowrap;
-  input[type="radio"] {
+  input[type='radio'] {
     opacity: 0;
     position: fixed;
     width: 0;
@@ -270,7 +266,7 @@ const StyledTokenSelector = styled.div`
     border: 1px solid transparent;
     border-radius: 4px;
   }
-  input[type="radio"]:checked + label {
+  input[type='radio']:checked + label {
     border: 1px solid #4c4;
     box-shadow: 0 0 0.5em 0 #4c4, inset 0 0 0.5em 0 #4c4;
   }

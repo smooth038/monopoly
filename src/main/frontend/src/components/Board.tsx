@@ -1,33 +1,33 @@
+import { RootState } from 'app/store';
+import boardImage from 'assets/board-high-res.jpg';
 import {
   Coordinates,
   getSquare,
   selectableSquares,
   spaceCoordinates,
   spaceToProperty,
-} from "helpers/boardSpaceHelper";
-import React, { useCallback, useEffect, useState } from "react";
+} from 'helpers/boardSpaceHelper';
 import {
   Token,
   centerCoordinates,
   getTokenOffset,
   tokenImages,
-} from "helpers/tokenHelper";
+} from 'helpers/tokenHelper';
+
+import { Player } from 'models/player';
+import { UiActionType } from 'models/uiAction';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { nextAction } from 'slices/actionsSlice';
 import {
   advanceCurrentPlayer,
   freePlayerFromJail,
   payTax,
   sendPlayerToJail,
   setGameLock,
-} from "slices/gameSlice";
-import { useDispatch, useSelector } from "react-redux";
-
-import { Player } from "models/player";
-import { PropertyCard } from "./PropertyCard";
-import { RootState } from "app/store";
-import { UiActionType } from "models/uiAction";
-import boardImage from "assets/board-high-res.jpg";
-import { nextAction } from "slices/actionsSlice";
-import styled from "styled-components";
+} from 'slices/gameSlice';
+import styled from 'styled-components';
+import { PropertyCard } from './PropertyCard';
 
 export interface BoardProps {
   frameHeight: number;
@@ -47,18 +47,20 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
       switch (actionsState.actions[0].type) {
         case UiActionType.ADVANCE:
           dispatch(setGameLock(true));
-          const distance = actionsState.actions[0].params[0];
-          const reverse = distance < 0;
-          for (let i = 1; i <= Math.abs(distance); i++) {
-            setTimeout(() => {
-              dispatch(advanceCurrentPlayer(reverse));
-              if (i === Math.abs(distance)) {
-                setTimeout(() => {
-                  dispatch(setGameLock(false));
-                  dispatch(nextAction());
-                }, 500);
-              }
-            }, 300 * i);
+          {
+            const distance = actionsState.actions[0].params[0];
+            const reverse = distance < 0;
+            for (let i = 1; i <= Math.abs(distance); i++) {
+              setTimeout(() => {
+                dispatch(advanceCurrentPlayer(reverse));
+                if (i === Math.abs(distance)) {
+                  setTimeout(() => {
+                    dispatch(setGameLock(false));
+                    dispatch(nextAction());
+                  }, 500);
+                }
+              }, 300 * i);
+            }
           }
           break;
         case UiActionType.JAIL_IN:
@@ -86,7 +88,7 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
   }, [actionsState.actions, dispatch]);
 
   const handleBoardClick = (event: React.MouseEvent) => {
-    let targetRect = event.currentTarget.getBoundingClientRect();
+    const targetRect = event.currentTarget.getBoundingClientRect();
     const x = event.pageX - targetRect.left;
     const y = event.pageY - targetRect.top;
     const square = getSquare(x, y, targetRect);
@@ -145,10 +147,10 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
             <StyledHighlight
               className="highlight"
               style={{
-                left: x1 * 100 + "%",
-                width: (x2 - x1) * 100 + "%",
-                top: y1 * 100 + "%",
-                height: (y2 - y1) * 100 + "%",
+                left: x1 * 100 + '%',
+                width: (x2 - x1) * 100 + '%',
+                top: y1 * 100 + '%',
+                height: (y2 - y1) * 100 + '%',
               }}
             />
           );
@@ -160,9 +162,9 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
           <StyledToken
             key={player.token}
             style={{
-              left: x1 * 100 + "%",
-              top: y1 * 100 + "%",
-              height: tokenSize * 100 + "%",
+              left: x1 * 100 + '%',
+              top: y1 * 100 + '%',
+              height: tokenSize * 100 + '%',
             }}
           >
             <img
@@ -177,7 +179,7 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
 };
 
 const StyledBoard = styled.div<{ frameHeight: number }>`
-  --board-size: ${(props) => (0.95 * props.frameHeight).toString() + "px"};
+  --board-size: ${(props) => (0.95 * props.frameHeight).toString() + 'px'};
   border: 3px solid black;
   border-radius: 7px;
   text-align: center;

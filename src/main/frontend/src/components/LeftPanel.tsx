@@ -1,23 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState } from 'app/store';
+import { PlayerList } from 'components/PlayerList';
+import { Player } from 'models/player';
+import { UiActionType } from 'models/uiAction';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Die } from "./Die";
-import { MessageLog } from "./MessageLog";
-import { Player } from "models/player";
-import { PlayerList } from "components/PlayerList";
-import { RootState } from "app/store";
-import { UiActionType } from "models/uiAction";
-import { gameService } from "service/gameService";
-import { nextAction } from "slices/actionsSlice";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import { gameService } from 'service/gameService';
+import { nextAction } from 'slices/actionsSlice';
+import styled from 'styled-components';
+import { Die } from './Die';
+import { MessageLog } from './MessageLog';
 
 export interface LeftPanelProps {
   frameHeight: number;
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
-  const { t } = useTranslation(["common", "spaces"]);
+  const { t } = useTranslation(['common', 'spaces']);
   const gameState = useSelector((state: RootState) => state.game);
   const [gameHasBegun, setGameHasBegun] = useState(false);
   const currentPlayerRef = useRef<Player>(
@@ -35,7 +35,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
     (state: RootState) =>
       state.game.players[state.game.currentPlayer]?.jailTurnsRemaining
   );
-  const [messageLog, setMessageLog] = useState<string>(t("log.welcomeMessage"));
+  const [messageLog, setMessageLog] = useState<string>(t('log.welcomeMessage'));
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
       setDiceDisabled(true);
     } else {
       switch (gameState.gameStep) {
-        case "TURN_BEGIN":
+        case 'TURN_BEGIN':
           if (gameState.players[gameState.currentPlayer]?.isInJail) {
             setDiceDisabled(true);
           } else {
@@ -55,8 +55,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           }
           setNextPlayerButtonDisabled(true);
           break;
-        case "TURN_END":
-          console.log("TURN_END");
+        case 'TURN_END':
+          console.log('TURN_END');
           setNextPlayerButtonDisabled(false);
           setDiceDisabled(true);
           if (hasAdvanced.current) {
@@ -65,7 +65,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
               setMessageLog(
                 (log) =>
                   log +
-                  t("log.landsOn", {
+                  t('log.landsOn', {
                     player: currentPlayerRef.current.name,
                     space: t(`spaces:${currentPlayerRef.current.position}`),
                   })
@@ -73,13 +73,13 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
             }
           }
           break;
-        case "RE_ROLL":
+        case 'RE_ROLL':
           if (hasAdvanced.current) {
             hasAdvanced.current = false;
             setMessageLog(
               (log) =>
                 log +
-                t("log.landsOn", {
+                t('log.landsOn', {
                   player: currentPlayerRef.current.name,
                   space: t(`spaces:${currentPlayerRef.current.position}`),
                 })
@@ -96,20 +96,20 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   useEffect(() => {
     if (gameHasBegun) {
       switch (gameState.gameStep) {
-        case "TURN_BEGIN":
+        case 'TURN_BEGIN':
           setMessageLog(
             (log) =>
               log +
-              t("log.startTurn", {
+              t('log.startTurn', {
                 player: currentPlayerRef.current.name,
               })
           );
           break;
-        case "TURN_END":
-          console.log("TURN END");
+        case 'TURN_END':
+          console.log('TURN END');
           break;
-        case "RE_ROLL":
-          console.log("RE-ROLL");
+        case 'RE_ROLL':
+          console.log('RE-ROLL');
           break;
         default:
         // setMessageLog((log) => log + gameState.gameStep + "\n");
@@ -138,7 +138,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                     setMessageLog(
                       (log) =>
                         log +
-                        t("log.roll", {
+                        t('log.roll', {
                           player: currentPlayerRef.current.name,
                           diceRoll: result,
                         })
@@ -147,7 +147,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                     setMessageLog(
                       (log) =>
                         log +
-                        t("log.jailRoll", {
+                        t('log.jailRoll', {
                           player: currentPlayerRef.current.name,
                         })
                     );
@@ -158,7 +158,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                   setMessageLog(
                     (log) =>
                       log +
-                      t("log.rollDouble1", {
+                      t('log.rollDouble1', {
                         player: currentPlayerRef.current.name,
                         diceRoll: result,
                       })
@@ -168,7 +168,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                   setMessageLog(
                     (log) =>
                       log +
-                      t("log.rollDouble2", {
+                      t('log.rollDouble2', {
                         player: currentPlayerRef.current.name,
                         diceRoll: result,
                       })
@@ -178,7 +178,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                   setMessageLog(
                     (log) =>
                       log +
-                      t("log.rollDouble3", {
+                      t('log.rollDouble3', {
                         player: currentPlayerRef.current.name,
                         diceRoll: result,
                       })
@@ -186,7 +186,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                   break;
                 default:
                   console.error(
-                    "Received a dice roll with a doubleDice value > 3! That should never happen.\n"
+                    'Received a dice roll with a doubleDice value > 3! That should never happen.\n'
                   );
               }
               dispatch(nextAction());
@@ -195,35 +195,38 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           break;
         case UiActionType.ADVANCE:
           hasAdvanced.current = true;
-          const distance = actionsState.actions[0].params[0];
-          if (distance > 0) {
-            setMessageLog(
-              (log) =>
-                log +
-                t("log.advance", {
-                  player: currentPlayerRef.current.name,
-                  count: distance,
-                })
-            );
-          } else {
-            setMessageLog(
-              (log) =>
-                log + t("log.goBack", { player: currentPlayerRef.current.name })
-            );
+          {
+            const distance = actionsState.actions[0].params[0];
+            if (distance > 0) {
+              setMessageLog(
+                (log) =>
+                  log +
+                  t('log.advance', {
+                    player: currentPlayerRef.current.name,
+                    count: distance,
+                  })
+              );
+            } else {
+              setMessageLog(
+                (log) =>
+                  log +
+                  t('log.goBack', { player: currentPlayerRef.current.name })
+              );
+            }
           }
           break;
         case UiActionType.JAIL_IN:
           setMessageLog(
             (log) =>
               log +
-              t("log.putInJail", { player: currentPlayerRef.current.name })
+              t('log.putInJail', { player: currentPlayerRef.current.name })
           );
           break;
         case UiActionType.JAIL_OUT:
           setMessageLog(
             (log) =>
               log +
-              t("log.releaseFromJail", {
+              t('log.releaseFromJail', {
                 player: currentPlayerRef.current.name,
               })
           );
@@ -232,7 +235,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
           setMessageLog(
             (log) =>
               log +
-              t("log.payTax", {
+              t('log.payTax', {
                 player: currentPlayerRef.current.name,
                 amount: actionsState.actions[0].params[0].toLocaleString(),
                 jackpot: actionsState.actions[0].params[1].toLocaleString(),
@@ -242,7 +245,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
     }
   }, [actionsState.actions, dispatch, t]);
 
-  const handleRollDice = (isJailRoll: boolean = false) => {
+  const handleRollDice = (isJailRoll = false) => {
     if (isRolling || (!isJailRoll && diceDisabled)) {
       return;
     }
@@ -258,7 +261,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
   return (
     <StyledLeftPanel frameHeight={props.frameHeight}>
       <PlayerList />
-      <StyledDice onClick={(event: React.MouseEvent) => handleRollDice()}>
+      <StyledDice onClick={() => handleRollDice()}>
         <Die
           disabled={diceDisabled}
           value={dieValues[0]}
@@ -276,21 +279,19 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
       <div className="buttons">
         <button
           disabled={nextPlayerButtonDisabled}
-          className={nextPlayerButtonDisabled ? "disabled" : undefined}
-          onClick={(event: React.MouseEvent) =>
-            gameService.endTurn(gameState.gameId, dispatch)
-          }
+          className={nextPlayerButtonDisabled ? 'disabled' : undefined}
+          onClick={() => gameService.endTurn(gameState.gameId, dispatch)}
         >
-          {t("buttons.endTurn")}
+          {t('buttons.endTurn')}
         </button>
-        {jailTurnsRemaining > 0 && gameState.gameStep === "TURN_BEGIN" && (
+        {jailTurnsRemaining > 0 && gameState.gameStep === 'TURN_BEGIN' && (
           <div className="inJailOptions">
             <button
-              onClick={(event: React.MouseEvent) => {
+              onClick={() => {
                 setMessageLog(
                   (log) =>
                     log +
-                    t("log.jailWait", {
+                    t('log.jailWait', {
                       player: currentPlayerRef.current.name,
                       count: jailTurnsRemaining - 1,
                     })
@@ -298,36 +299,36 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
                 gameService.jailWait(gameState.gameId, dispatch);
               }}
             >
-              {t("buttons.jailWait", { count: jailTurnsRemaining })}
+              {t('buttons.jailWait', { count: jailTurnsRemaining })}
             </button>
             <button
-              onClick={(event: React.MouseEvent) => {
+              onClick={() => {
                 setDiceDisabled(false);
                 handleRollDice(true);
               }}
             >
-              {t("buttons.jailRoll")}
+              {t('buttons.jailRoll')}
             </button>
             <button
               disabled={currentPlayerRef.current.cash < 50}
               className={
-                currentPlayerRef.current.cash < 50 ? "disabled" : undefined
+                currentPlayerRef.current.cash < 50 ? 'disabled' : undefined
               }
-              onClick={(event: React.MouseEvent) => {
+              onClick={() => {
                 gameService.jailPay(gameState.gameId, dispatch);
               }}
             >
-              {t("buttons.jailPay", { player: currentPlayerRef.current.name })}
+              {t('buttons.jailPay', { player: currentPlayerRef.current.name })}
             </button>
             <button
               disabled={currentPlayerRef.current.gojfCards > 0}
               className={
                 currentPlayerRef.current.gojfCards === 0
-                  ? "disabled"
+                  ? 'disabled'
                   : undefined
               }
             >
-              {t("buttons.jailGotf")}
+              {t('buttons.jailGotf')}
             </button>
           </div>
         )}
@@ -373,7 +374,7 @@ const StyledLeftPanel = styled.div<{ frameHeight: number }>`
   padding: 0px 20px;
   min-width: 400px;
   max-width: 400px;
-  height: ${(props) => (0.95 * props.frameHeight).toString() + "px"};
+  height: ${(props) => (0.95 * props.frameHeight).toString() + 'px'};
   color: white;
   background-image: linear-gradient(-210deg, #fff4, #fff0);
 

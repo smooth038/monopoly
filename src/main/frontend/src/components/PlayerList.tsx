@@ -1,10 +1,10 @@
-import { Token, tokenImages } from "helpers/tokenHelper";
+import { RootState } from 'app/store';
+import redDice from 'assets/red-dice.svg';
+import { Token, tokenImages } from 'helpers/tokenHelper';
 
-import React from "react";
-import { RootState } from "app/store";
-import redDice from "assets/red-dice.svg";
-import styled from "styled-components";
-import { useSelector } from "react-redux";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
 
 export const PlayerList: React.FC = () => {
   const players = useSelector((state: RootState) => state.game.players);
@@ -19,7 +19,7 @@ export const PlayerList: React.FC = () => {
           <img src={redDice} alt="dice" />
         </StyledDice>
       )}
-      {players.map((player, i) => {
+      {players.map((player) => {
         // console.log(player, i);
         return (
           <StyledListItem key={player.name}>
@@ -59,7 +59,7 @@ const StyledListItem = styled.li`
     margin-right: 0.25rem;
     white-space: nowrap;
     ::after {
-      content: " ..........................................................................................................................................";
+      content: ' ..........................................................................................................................................';
       white-space: nowrap;
     }
   }
@@ -72,7 +72,7 @@ const StyledDice = styled.div<{ currentPlayer: number }>`
   display: flex;
   align-items: center;
   position: absolute;
-  top: ${(props) => props.currentPlayer * 2 + "rem"};
+  top: ${(props) => props.currentPlayer * 2 + 'rem'};
   left: -0.5rem;
   height: 2rem;
   img {

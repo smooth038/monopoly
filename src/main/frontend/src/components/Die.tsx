@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export interface DieProps {
   value: number;
@@ -33,16 +34,16 @@ export const Die: React.FC<DieProps> = (props: DieProps) => {
 
   return (
     <StyledRoll dieNumber={props.dieNumber}>
-      <div className={props.rolling ? "tilt" : ""}>
-        <div className={props.rolling ? "rotate" : ""}>
-          <div className={props.rolling ? "shake" : ""}>
+      <div className={props.rolling ? 'tilt' : ''}>
+        <div className={props.rolling ? 'rotate' : ''}>
+          <div className={props.rolling ? 'shake' : ''}>
             <StyledDie
               disabled={props.disabled}
-              key={props.dieNumber + "-" + props.value}
-              className={props.rolling ? "invRotate" : ""}
+              key={props.dieNumber + '-' + props.value}
+              className={props.rolling ? 'invRotate' : ''}
             >
               {Array.from({ length: dieFace }).map((_, i) => (
-                <span key={"pip-" + i}></span>
+                <span key={'pip-' + i}></span>
               ))}
             </StyledDie>
           </div>
@@ -56,9 +57,9 @@ const StyledDie = styled.div<{ disabled: boolean }>`
   position: relative;
   display: grid;
   grid-template-areas:
-    "a . c"
-    "e g f"
-    "d . b";
+    'a . c'
+    'e g f'
+    'd . b';
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   padding: 0.5rem;
@@ -75,7 +76,7 @@ const StyledDie = styled.div<{ disabled: boolean }>`
   ::after {
     position: absolute;
     background-color: white;
-    content: "";
+    content: '';
     top: 0;
     bottom: 0;
     left: 0;
@@ -116,21 +117,21 @@ const StyledDie = styled.div<{ disabled: boolean }>`
 const StyledRoll = styled.div<{ dieNumber: number }>`
   .shake {
     animation: linear_shake
-      ${(props) => (props.dieNumber === 1 ? 0.1 : 0.12) + "s"} linear infinite;
+      ${(props) => (props.dieNumber === 1 ? 0.1 : 0.12) + 's'} linear infinite;
   }
 
   .rotate {
-    animation: rotate ${(props) => (props.dieNumber === 1 ? 3 : 2.8) + "s"}
+    animation: rotate ${(props) => (props.dieNumber === 1 ? 3 : 2.8) + 's'}
       linear infinite;
   }
 
   .invRotate {
-    animation: rotate ${(props) => (props.dieNumber === 1 ? 3 : 2.8) + "s"}
+    animation: rotate ${(props) => (props.dieNumber === 1 ? 3 : 2.8) + 's'}
       linear infinite reverse;
   }
 
   .tilt {
-    animation: tilt ${(props) => (props.dieNumber === 1 ? 0.2 : 0.22) + "s"}
+    animation: tilt ${(props) => (props.dieNumber === 1 ? 0.2 : 0.22) + 's'}
       linear infinite;
   }
 
