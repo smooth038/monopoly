@@ -3,10 +3,10 @@ import actionsReducer from 'slices/actionsSlice';
 import gameReducer from 'slices/gameSlice';
 
 export const store = configureStore({
-  reducer: {
-    game: gameReducer,
-    actions: actionsReducer,
-  },
+	reducer: {
+		game: gameReducer,
+		actions: actionsReducer,
+	},
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

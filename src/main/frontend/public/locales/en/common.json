@@ -1,4 +1,10 @@
 {
+	"noPageMessage" : "404 not found!",
+	"startScreen" : {
+		"welcome": "Welcome to Monopoly!",
+		"newGame": "New Game",
+		"loadGame": "Load existing game"
+	},
   "newGameModal": {
     "title": "New Game",
     "numberOfPlayers": "Number of players:",

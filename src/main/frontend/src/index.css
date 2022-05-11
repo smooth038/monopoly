@@ -64,7 +64,7 @@ button {
   box-shadow: 0 0 0.5em 0 white, inset 0 0 0.5em 0 white;
   color: white;
 
-  transition: box-shadow 0.5s ease, opacity 0.5s ease;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease, background-color 0.1s ease-out;
 }
 
 button.disabled {
@@ -73,7 +73,7 @@ button.disabled {
 }
 
 button:hover:not(.disabled) {
-  background-color: #4c48;
+  background-color: rgb(38, 116, 38);
   text-shadow: 0px 0px 3px white;
 }
 button:active:not(.disabled) {

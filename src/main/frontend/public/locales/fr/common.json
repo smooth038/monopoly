@@ -1,4 +1,10 @@
-{
+{	
+	"noPageMessage" : "404 page introuvable!",
+	"startScreen" : {
+		"welcome": "Bienvenue au Monopoly!",
+		"newGame": "Nouvelle partie",
+		"loadGame": "Charger une partie existante"
+	},
   "newGameModal": {
     "title": "Nouvelle partie",
     "numberOfPlayers": "Nombre de joueurs:",
