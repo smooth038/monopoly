@@ -1,6 +1,6 @@
 package com.smooth038.monopoly.propertyregister;
 
-import com.smooth038.monopoly.game.Game;
+import com.smooth038.monopoly.player.Player;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,5 +30,26 @@ public class PropertyRegister {
 
     public PropertyRegister() {
         this.propertyEntries = new ArrayList<>();
+    }
+
+    private PropertyEntry findProperty(int position) {
+        for (PropertyEntry property : propertyEntries) {
+            if (property.getPropertyId() == position) {
+                return property;
+            }
+        }
+        return null;
+    }
+    public Player getOwner(int position) {
+        PropertyEntry property = findProperty(position);
+        if (property != null) {
+            return property.getOwner();
+        }
+        return null;
+    }
+
+    public Integer getNumberOfHouses(int position) {
+        PropertyEntry property = findProperty(position);
+        return (int) property.getNumberOfHouses();
     }
 }

@@ -70,16 +70,39 @@ export const gameSlice = createSlice({
 			const player = { ...state.players[state.currentPlayer] };
 			player.position =
 				(reverse.payload ? player.position - 1 : player.position + 1) % 40;
+			// if player passes go
+			if (player.position === 0) {
+				player.cash += 200;
+			}
 			const players = [...state.players];
 			players[state.currentPlayer] = player;
 			return { ...state, players };
 		},
-		payTax: (state, amount: PayloadAction<number>) => {
+		receiveMoney: (state, amount: PayloadAction<number>) => {
 			const player = { ...state.players[state.currentPlayer] };
-			// for now, we don't keep the jackpot total value in the UI
+			player.cash += amount.payload;
+			const players = [...state.players];
+			players[state.currentPlayer] = player;
+			return { ...state, players };
+		},
+		loseMoney: (state, amount: PayloadAction<number>) => {
+			const player = { ...state.players[state.currentPlayer] };
 			player.cash -= amount.payload;
 			const players = [...state.players];
 			players[state.currentPlayer] = player;
+			return { ...state, players };
+		},
+		exchangeMoney: (state, params: PayloadAction<[number, number, number]>) => {
+			const [p1, p2, amount] = [
+				{ ...state.players[params.payload[0]] },
+				{ ...state.players[params.payload[1]] },
+				params.payload[2],
+			];
+			p1.cash -= amount;
+			p2.cash += amount;
+			const players = [...state.players];
+			players[params.payload[0]] = p1;
+			players[params.payload[1]] = p2;
 			return { ...state, players };
 		},
 		setGameLock: (state, action: PayloadAction<boolean>) => {
@@ -152,7 +175,9 @@ export const {
 	setGameStep,
 	nextPlayer,
 	advanceCurrentPlayer,
-	payTax,
+	receiveMoney,
+	loseMoney,
+	exchangeMoney,
 	setGameLock,
 	sendPlayerToJail,
 	freePlayerFromJail,

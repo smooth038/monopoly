@@ -18,4 +18,8 @@ public class UiAction {
     public List<Integer> getParams() {
         return params;
     }
+
+    public void setParams(List<Integer> params) {
+        this.params = params;
+    }
 }

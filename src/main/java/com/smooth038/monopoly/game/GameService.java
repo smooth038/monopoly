@@ -3,6 +3,9 @@ package com.smooth038.monopoly.game;
 import com.smooth038.monopoly.player.Player;
 import com.smooth038.monopoly.player.PlayerService;
 import com.smooth038.monopoly.player.Token;
+import com.smooth038.monopoly.propertyregister.PropertyEntry;
+import com.smooth038.monopoly.propertyregister.PropertyEntryService;
+import com.smooth038.monopoly.propertyregister.PropertyRegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +19,17 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GameService self;
     private PlayerService playerService;
+    private PropertyEntryService propertyEntryService;
     private GameEngine gameEngine;
 
 
     @Autowired
-    public GameService(GameRepository gameRepository, PlayerService playerService, GameEngine gameEngine) {
+    public GameService(GameRepository gameRepository, PlayerService playerService,
+                       PropertyEntryService propertyEntryService, GameEngine gameEngine) {
         this.gameRepository = gameRepository;
         this.self = this;
         this.playerService = playerService;
+        this.propertyEntryService = propertyEntryService;
         this.gameEngine = gameEngine;
     }
 
@@ -35,8 +41,9 @@ public class GameService {
         Game game = new Game();
         gameRepository.save(game);
         List<Player> players = new ArrayList<>();
+        short i = 0;
         for (PlayerInfo player : playerInfos) {
-            Player p = new Player(game, player.getName(), Token.values()[player.getToken()]);
+            Player p = new Player(game, player.getName(), Token.values()[player.getToken()], i++);
             playerService.registerNewPlayer(p);
             players.add(p);
         }

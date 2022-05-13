@@ -22,22 +22,32 @@
     "rollDouble1": "{{player}} has rolled a {{diceRoll}}. That's a double!\n",
     "rollDouble2": "{{player}} has rolled a {{diceRoll}}. That's a second double!\n",
     "rollDouble3": "{{player}} has rolled a third double and therefore goes straight into jail!\n",
+		"rollAgain": "{{player}} must roll again because he had a double.\n",
     "advance_one": "{{player}} advances {{count}} space.\n",
     "advance_other": "{{player}} advances {{count}} spaces.\n",
     "goBack": "{{player}} goes back {{count}} spaces.\n",
+		"passGo": "{{player}} passes Go and gain $200.\n",
     "landsOn": "{{player}} lands on {{space}}.\n",
+    "landsOnOwnProperty": "{{player}} already owns that property.\n",
+    "landsOnSomeoneProperty": "That property is owned by {{player}}.\n",
     "jailRoll": "{{player}} did not roll doubles and therefore must stay in jail.\n",
     "putInJail": "{{player}} is put in jail.\n",
     "releaseFromJail": "{{player}} is released from jail.\n",
-    "payTax": "{{player}} pays {{amount}}$ to the pot. (Total pot: {{jackpot}}$)\n",
+    "payTax": "{{player}} pays {{amount}}$ to the pot. (Total pot: ${{jackpot}})\n",
     "jailWait_one": "{{player}} waits in jail for one turn. ({{count}} turn remaining)\n",
-    "jailWait_other": "{{player}} waits in jail for one turn. ({{count}} turns remaining)\n"
+    "jailWait_other": "{{player}} waits in jail for one turn. ({{count}} turns remaining)\n",
+		"buyOrAuction": "{{propertyName}} has no owner. {{player}} can choose to buy it for ${{cost}}.\n",
+		"propertyBought": "{{player}} buys {{propertyName}} for ${{cost}}.\n",
+		"payTo": "{{player1}} pays ${{cost}} to {{player2}}.\n",
+		"payDoubleRentTo": "{{player1}} pays ${{cost}} to {{player2}} (double rent because {{player2}} owns all sites of the color group).\n"
   },
   "buttons": {
     "endTurn": "End turn",
     "jailWait": "Wait one turn ({{count}} remaining)",
     "jailRoll": "Try to roll doubles",
     "jailPay": "Pay 50$",
-    "jailGotf": "Use \"get out of jail free\" card"
+    "jailGotf": "Use \"get out of jail free\" card",
+		"buyProperty": "Buy for ${{cost}}",
+		"doNotBuyProperty": "Do not buy"
   }
 }

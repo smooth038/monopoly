@@ -1,5 +1,6 @@
 import { RootState } from 'app/store';
 import { PlayerList } from 'components/PlayerList';
+import { propertyData, propertyPrices } from 'helpers/propertyHelper';
 import { Player } from 'models/player';
 import { UiActionType } from 'models/uiAction';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { gameService } from 'service/gameService';
 import { nextAction } from 'slices/actionsSlice';
 import styled from 'styled-components';
+import { createImportSpecifier } from 'typescript';
 import { Die } from './Die';
 import { MessageLog } from './MessageLog';
 
@@ -28,15 +30,27 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 	const [isRolling, setIsRolling] = useState(false);
 	const jailRoll = useRef(false);
 	const hasAdvanced = useRef(false);
+	const doneWithRefs = useRef(false);
+	const ownedByCurrentPlayer = useRef(false);
+	const currentPropertyOwner = useRef<Player | null>(null);
 	const [diceDisabled, setDiceDisabled] = useState(false);
 	const [nextPlayerButtonDisabled, setNextPlayerButtonDisabled] =
 		useState(true);
+	const [showBuyPropertyButtons, setShowBuyPropertyButtons] = useState(false);
 	const jailTurnsRemaining = useSelector(
 		(state: RootState) =>
 			state.game.players[state.game.currentPlayer]?.jailTurnsRemaining
 	);
 	const [messageLog, setMessageLog] = useState<string>(t('log.welcomeMessage'));
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (doneWithRefs.current) {
+			ownedByCurrentPlayer.current = false;
+			currentPropertyOwner.current = null;
+			doneWithRefs.current = false;
+		}
+	}, [messageLog]);
 
 	useEffect(() => {
 		currentPlayerRef.current = gameState.players[gameState.currentPlayer];
@@ -58,6 +72,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 				case 'TURN_END':
 					console.log('TURN_END');
 					setNextPlayerButtonDisabled(false);
+					setShowBuyPropertyButtons(false);
 					setDiceDisabled(true);
 					if (hasAdvanced.current) {
 						hasAdvanced.current = false;
@@ -70,6 +85,27 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 										space: t(`spaces:${currentPlayerRef.current.position}`),
 									})
 							);
+							if (ownedByCurrentPlayer.current) {
+								setMessageLog(
+									(log) =>
+										log +
+										t('log.landsOnOwnProperty', {
+											player: currentPlayerRef.current.name,
+											space: t(`spaces:${currentPlayerRef.current.position}`),
+										})
+								);
+							}
+							if (currentPropertyOwner.current !== null) {
+								setMessageLog(
+									(log) =>
+										log +
+										t('log.landsOnSomeoneProperty', {
+											player: currentPropertyOwner.current?.name,
+											space: t(`spaces:${currentPlayerRef.current.position}`),
+										})
+								);
+							}
+							doneWithRefs.current = true;
 						}
 					}
 					break;
@@ -84,8 +120,62 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 									space: t(`spaces:${currentPlayerRef.current.position}`),
 								})
 						);
+						if (ownedByCurrentPlayer.current) {
+							setMessageLog(
+								(log) =>
+									log +
+									t('log.landsOnOwnProperty', {
+										player: currentPlayerRef.current.name,
+										space: t(`spaces:${currentPlayerRef.current.position}`),
+									})
+							);
+						}
+						if (currentPropertyOwner.current !== null) {
+							setMessageLog(
+								(log) =>
+									log +
+									t('log.landsOnSomeoneProperty', {
+										player: currentPropertyOwner.current?.name,
+										space: t(`spaces:${currentPlayerRef.current.position}`),
+									})
+							);
+						}
+						doneWithRefs.current = true;
 					}
+					setMessageLog(
+						(log) =>
+							log +
+							t('log.rollAgain', {
+								player: currentPlayerRef.current.name,
+							})
+					);
 					setDiceDisabled(false);
+					setShowBuyPropertyButtons(false);
+					break;
+				case 'BUY_OR_AUCTION':
+					if (hasAdvanced.current) {
+						hasAdvanced.current = false;
+						setMessageLog(
+							(log) =>
+								log +
+								t('log.landsOn', {
+									player: currentPlayerRef.current.name,
+									space: t(`spaces:${currentPlayerRef.current.position}`),
+								})
+						);
+						setMessageLog(
+							(log) =>
+								log +
+								t('log.buyOrAuction', {
+									player: currentPlayerRef.current.name,
+									propertyName: t(
+										`spaces:${currentPlayerRef.current.position}`
+									),
+									cost: propertyPrices.get(currentPlayerRef.current.position),
+								})
+						);
+						setShowBuyPropertyButtons(true);
+					}
 					break;
 				default:
 					break;
@@ -106,10 +196,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 					);
 					break;
 				case 'TURN_END':
-					console.log('TURN END');
 					break;
 				case 'RE_ROLL':
-					console.log('RE-ROLL');
 					break;
 				default:
 				// setMessageLog((log) => log + gameState.gameStep + "\n");
@@ -195,6 +283,12 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 					break;
 				case UiActionType.ADVANCE:
 					hasAdvanced.current = true;
+					ownedByCurrentPlayer.current =
+						actionsState.actions[0].params[1] === 1;
+					if (actionsState.actions[0].params[1] > 1) {
+						currentPropertyOwner.current =
+							gameState.players[actionsState.actions[0].params[1] - 2];
+					}
 					{
 						const distance = actionsState.actions[0].params[0];
 						if (distance > 0) {
@@ -241,9 +335,49 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 								jackpot: actionsState.actions[0].params[1].toLocaleString(),
 							})
 					);
+					break;
+				case UiActionType.BUY:
+					setMessageLog(
+						(log) =>
+							log +
+							t('log.propertyBought', {
+								player: currentPlayerRef.current.name,
+								propertyName: t(`spaces:${currentPlayerRef.current.position}`),
+								cost: propertyPrices.get(currentPlayerRef.current.position),
+							})
+					);
+					break;
+				case UiActionType.PAY_TO:
+					setMessageLog(
+						(log) =>
+							log +
+							t(
+								actionsState.actions[0].params[3] === 1
+									? 'log.payDoubleRentTo'
+									: 'log.payTo',
+								{
+									player1:
+										gameState.players[actionsState.actions[0].params[0]].name,
+									player2:
+										gameState.players[actionsState.actions[0].params[1]].name,
+									cost: actionsState.actions[0].params[2],
+								}
+							)
+					);
+					break;
 			}
 		}
 	}, [actionsState.actions, dispatch, t]);
+
+	// for passing go
+	useEffect(() => {
+		if (hasAdvanced.current && currentPlayerRef.current.position === 0) {
+			setMessageLog(
+				(log) =>
+					log + t('log.passGo', { player: currentPlayerRef.current.name })
+			);
+		}
+	}, [gameState.players[gameState.currentPlayer].position]);
 
 	const handleRollDice = (isJailRoll = false) => {
 		if (isRolling || (!isJailRoll && diceDisabled)) {
@@ -256,6 +390,12 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 		} else {
 			gameService.rollDice(gameState.gameId, dispatch);
 		}
+	};
+
+	const isBuyButtonDisabled = () => {
+		const propertyPrice = propertyPrices.get(currentPlayerRef.current.position);
+		if (!propertyPrice) return true;
+		return currentPlayerRef.current.cash < propertyPrice;
 	};
 
 	return (
@@ -329,6 +469,28 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 							}
 						>
 							{t('buttons.jailGotf')}
+						</button>
+					</div>
+				)}
+				{showBuyPropertyButtons && (
+					<div>
+						<button
+							disabled={isBuyButtonDisabled()}
+							className={isBuyButtonDisabled() ? 'disabled' : undefined}
+							onClick={() => {
+								gameService.buyProperty(gameState.gameId, dispatch);
+							}}
+						>
+							{t('buttons.buyProperty', {
+								cost: propertyPrices.get(currentPlayerRef.current.position),
+							})}
+						</button>
+						<button
+							onClick={() => {
+								gameService.doNotBuyProperty(gameState.gameId, dispatch);
+							}}
+						>
+							{t('buttons.doNotBuyProperty')}
 						</button>
 					</div>
 				)}

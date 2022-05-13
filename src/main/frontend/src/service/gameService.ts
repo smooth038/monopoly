@@ -125,4 +125,30 @@ export const gameService = {
 				dispatch(decrementJailTurns());
 			});
 	},
+	buyProperty: async (gameId: number, dispatch: AppDispatch) => {
+		const buyPropertyRequest: UiRequest = {
+			gameId,
+			type: UiRequestType.BUY,
+			params: [],
+		};
+		return await axios
+			.post<GameResponse>(baseUrl, buyPropertyRequest)
+			.then((response) => {
+				dispatch(setGameStep(response.data.gameStep));
+				dispatch(addActions(response.data.actions));
+			});
+	},
+	doNotBuyProperty: async (gameId: number, dispatch: AppDispatch) => {
+		const doNotBuyPropertyRequest: UiRequest = {
+			gameId,
+			type: UiRequestType.DO_NOT_BUY,
+			params: [],
+		};
+		return await axios
+			.post<GameResponse>(baseUrl, doNotBuyPropertyRequest)
+			.then((response) => {
+				dispatch(setGameStep(response.data.gameStep));
+				dispatch(addActions(response.data.actions));
+			});
+	},
 };

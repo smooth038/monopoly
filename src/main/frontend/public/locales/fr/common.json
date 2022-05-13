@@ -22,17 +22,25 @@
     "rollDouble1": "{{player}} brasse les dés et obtient {{diceRoll}}. Ce sont des doubles!\n",
     "rollDouble2": "{{player}} brasse les dés et obtient {{diceRoll}}. Ce sont des doubles pour une deuxième fois!\n",
     "rollDouble3": "{{player}} a obtenu des doubles pour une troisième fois et doit donc aller directement en prison!\n",
+		"rollAgain": "{{player}} doit brasser les dés à nouveau car il a obtenu des doubles.\n",
     "advance_one": "{{player}} avance de {{count}} case.\n",
     "advance_other": "{{player}} avance de {{count}} cases.\n",
     "goBack": "{{player}} recule de {{count}} cases.\n",
+		"passGo": "{{player}} passe Go et réclame 200$.\n",
     "landsOn": "{{player}} atterrit sur {{space}}.\n",
+    "landsOnOwnProperty": "Cette propriété lui appartient.\n",
+    "landsOnSomeoneProperty": "Cette propriété appartient à {{player}}.\n",
     "jailRoll": "{{player}} n'a pas obtenu de doubles et doit donc rester en prison.\n",
     "putInJail": "{{player}} est envoyé en prison.\n",
     "releaseFromJail": "{{player}} est libéré de prison.\n",
     "payTax": "{{player}} paie {{amount}}$ au jack pot. (Le jack pot s'élève à {{jackpot}}$)\n",
     "jailWait_one": "{{player}} attend en prison pendant un tour. ({{count}} tour restant)\n",
     "jailWait_zero": "{{player}} attend en prison pendant un tour. ({{count}} tour restant)\n",
-    "jailWait_other": "{{player}} attend en prison pendant un tour. ({{count}} tours restants)\n"
+    "jailWait_other": "{{player}} attend en prison pendant un tour. ({{count}} tours restants)\n",
+		"buyOrAuction": "{{propertyName}} n'est possédé par personne. {{player}} peut l'acheter pour {{cost}}$.\n",
+		"propertyBought": "{{player}} achète {{propertyName}} pour {{cost}}$.\n",
+		"payTo": "{{player1}} paie {{cost}}$ à {{player2}}.\n",
+		"payDoubleRentTo": "{{player1}} paie {{cost}}$ à {{player2}} (location double car {{player2}} possède tous les lots de la même couleur).\n"
   },
   "buttons": {
     "endTurn": "Fin de tour",
@@ -41,6 +49,8 @@
     "jailWait_other": "Attendre un tour ({{count}} restants)",
     "jailRoll": "Tenter d'obtenir des doubles",
     "jailPay": "Payer 50$",
-    "jailGotf": "Utiliser une carte \"sortir de prison gratuitement\""
+    "jailGotf": "Utiliser une carte \"sortir de prison gratuitement\"",
+		"buyProperty": "Acheter pour {{cost}}$",
+		"doNotBuyProperty": "Ne pas acheter"
   }
 }

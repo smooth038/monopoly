@@ -25,6 +25,9 @@ public class Player {
     @JoinColumn(name = "game_id", referencedColumnName = "id")
     private final Game game;
 
+    @Column(columnDefinition = "TINYINT")
+    private final short turnOrder;
+
     private String name;
     @Column(columnDefinition = "enum('BOOT','CAR', 'CAT', 'DOG', 'DUCK', 'HAT', 'IRON', 'PENGUIN', 'SHIP', 'THIMBLE'," +
             " 'T_REX')")
@@ -41,16 +44,18 @@ public class Player {
     @OneToMany(mappedBy = "getOutOfJailFreeOwner")
     private List<CardDeque> getOutOfJailFreeCards;
 
-    public Player(Game game, String name, Token token) {
+    public Player(Game game, String name, Token token, short turnOrder) {
         this.game = game;
         this.name = name;
         this.token = token;
+        this.turnOrder = turnOrder;
     }
 
     public Player() {
         this.game = new Game();
         this.name = null;
         this.token = null;
+        this.turnOrder = 0;
     }
     public int getId() {
         return id;
@@ -90,6 +95,10 @@ public class Player {
 
     public void setPosition(short position) {
         this.position = position;
+    }
+
+    public short getTurnOrder() {
+        return turnOrder;
     }
 
     public boolean isInJail() {

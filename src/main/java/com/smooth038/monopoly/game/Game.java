@@ -4,6 +4,7 @@ import com.smooth038.monopoly.card.CardDeque;
 import com.smooth038.monopoly.card.CardType;
 import com.smooth038.monopoly.player.Player;
 import com.smooth038.monopoly.propertyregister.PropertyRegister;
+import com.smooth038.monopoly.propertyregister.PropertyRegisterRepository;
 
 import javax.persistence.*;
 import java.util.List;
@@ -90,6 +91,8 @@ public class Game {
     }
 
     public void incrementDoubleDice() { doubleDice++; }
+
+    public void clearDoubleDice() { doubleDice = 0; }
 
     public void endTurn() {
        playerTurn = (short)((playerTurn + 1) % players.size());

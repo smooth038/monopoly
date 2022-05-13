@@ -1,5 +1,7 @@
 package com.smooth038.monopoly.propertyregister;
 
+import com.smooth038.monopoly.player.Player;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,9 +23,37 @@ public class PropertyEntry {
     private PropertyRegister propertyRegister;
     @Column(columnDefinition = "TINYINT")
     private short propertyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private Player owner;
 
     @Column(columnDefinition = "TINYINT")
-    private short numberOfHouse;
+    private short numberOfHouses = 0;
 
-    private boolean isMortgaged;
+    public PropertyEntry() {
+    }
+
+    public PropertyEntry(PropertyRegister register, short propertyId, Player owner) {
+        this.propertyRegister = register;
+        this.propertyId = propertyId;
+        this.owner = owner;
+    }
+
+    public short getPropertyId() {
+        return propertyId;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public short getNumberOfHouses() {
+        return numberOfHouses;
+    }
+
+    public boolean isMortgaged() {
+        return isMortgaged;
+    }
+
+    private boolean isMortgaged = false;
 }

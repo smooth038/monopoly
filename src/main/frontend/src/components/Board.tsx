@@ -21,8 +21,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { nextAction } from 'slices/actionsSlice';
 import {
 	advanceCurrentPlayer,
+	exchangeMoney,
 	freePlayerFromJail,
-	payTax,
+	loseMoney,
 	sendPlayerToJail,
 	setGameLock,
 } from 'slices/gameSlice';
@@ -78,7 +79,19 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
 					dispatch(nextAction());
 					break;
 				case UiActionType.TAX:
-					dispatch(payTax(actionsState.actions[0].params[0]));
+					dispatch(loseMoney(actionsState.actions[0].params[0]));
+					dispatch(nextAction());
+					break;
+				case UiActionType.BUY:
+					dispatch(loseMoney(actionsState.actions[0].params[0]));
+					dispatch(nextAction());
+					break;
+				case UiActionType.PAY_TO:
+					dispatch(
+						exchangeMoney(
+							actionsState.actions[0].params as [number, number, number]
+						)
+					);
 					dispatch(nextAction());
 					break;
 				default:
@@ -127,8 +140,8 @@ export const Board: React.FC<BoardProps> = (props: BoardProps) => {
 		if (property) {
 			return (
 				<PropertyCard
-					propertyType={property.type}
-					rank={property.rank}
+					propertyType={property[0]}
+					rank={property[1]}
 					boardSize={0.95 * props.frameHeight}
 				/>
 			);

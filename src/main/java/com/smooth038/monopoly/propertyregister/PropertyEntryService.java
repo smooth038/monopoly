@@ -1,5 +1,6 @@
 package com.smooth038.monopoly.propertyregister;
 
+import com.smooth038.monopoly.player.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

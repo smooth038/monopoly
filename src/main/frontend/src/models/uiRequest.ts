@@ -7,6 +7,7 @@ export interface UiRequest {
 export enum UiRequestType {
 	AUCTION,
 	BUY,
+	DO_NOT_BUY,
 	DOWNGRADE,
 	END_TURN,
 	JAIL_GOJF,
