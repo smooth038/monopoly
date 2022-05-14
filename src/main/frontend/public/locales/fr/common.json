@@ -39,6 +39,7 @@
     "jailWait_other": "{{player}} attend en prison pendant un tour. ({{count}} tours restants)\n",
 		"buyOrAuction": "{{propertyName}} n'est possédé par personne. {{player}} peut l'acheter pour {{cost}}$.\n",
 		"propertyBought": "{{player}} achète {{propertyName}} pour {{cost}}$.\n",
+		"doNotBuy": "{{player}} choisit de ne pas acheter {{propertyName}}.\n",
 		"payTo": "{{player1}} paie {{cost}}$ à {{player2}}.\n",
 		"payDoubleRentTo": "{{player1}} paie {{cost}}$ à {{player2}} (location double car {{player2}} possède tous les lots de la même couleur).\n"
   },

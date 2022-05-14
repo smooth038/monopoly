@@ -38,6 +38,7 @@
     "jailWait_other": "{{player}} waits in jail for one turn. ({{count}} turns remaining)\n",
 		"buyOrAuction": "{{propertyName}} has no owner. {{player}} can choose to buy it for ${{cost}}.\n",
 		"propertyBought": "{{player}} buys {{propertyName}} for ${{cost}}.\n",
+		"doNotBuy": "{{player}} chooses not to buy {{propertyName}}.\n",
 		"payTo": "{{player1}} pays ${{cost}} to {{player2}}.\n",
 		"payDoubleRentTo": "{{player1}} pays ${{cost}} to {{player2}} (double rent because {{player2}} owns all sites of the color group).\n"
   },

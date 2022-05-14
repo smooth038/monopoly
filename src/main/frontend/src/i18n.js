@@ -12,8 +12,8 @@ i18n
 			// translation file path
 			loadPath: '/locales/{{lng}}/{{ns}}.json',
 		},
-		fallbackLng: 'en',
-		lng: 'en',
+		fallbackLng: 'fr',
+		lng: 'fr',
 		// disabled in production
 		debug: false,
 		ns: ['common', 'spaces', 'properties'],

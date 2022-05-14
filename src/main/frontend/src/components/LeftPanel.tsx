@@ -139,6 +139,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 										space: t(`spaces:${currentPlayerRef.current.position}`),
 									})
 							);
+							doneWithRefs.current = true;
+							return;
 						}
 						doneWithRefs.current = true;
 					}
@@ -401,6 +403,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 	return (
 		<StyledLeftPanel frameHeight={props.frameHeight}>
 			<PlayerList />
+			<MessageLog value={messageLog} />
 			<StyledDice onClick={() => handleRollDice()}>
 				<Die
 					disabled={diceDisabled}
@@ -415,7 +418,6 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 					dieNumber={2}
 				/>
 			</StyledDice>
-			<MessageLog value={messageLog} />
 			<div className="buttons">
 				<button
 					disabled={nextPlayerButtonDisabled}
@@ -488,6 +490,16 @@ export const LeftPanel: React.FC<LeftPanelProps> = (props: LeftPanelProps) => {
 						<button
 							onClick={() => {
 								gameService.doNotBuyProperty(gameState.gameId, dispatch);
+								setMessageLog(
+									(log) =>
+										log +
+										t('log.doNotBuy', {
+											player: currentPlayerRef.current.name,
+											propertyName: t(
+												`spaces:${currentPlayerRef.current.position}`
+											),
+										})
+								);
 							}}
 						>
 							{t('buttons.doNotBuyProperty')}

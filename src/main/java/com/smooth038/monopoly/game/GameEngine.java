@@ -93,38 +93,7 @@ public class GameEngine {
 
 		if (Spaces.isProperty(currentPlayer.getPosition())) {
 			// player lands on a property
-			Player owner = game.getPropertyRegister().getOwner(currentPlayer.getPosition());
-			if (owner == null) {
-				// property is not owned
-				game.setState(GameStep.BUY_OR_AUCTION);
-			} else {
-				if (!owner.equals(currentPlayer)) {
-					// property is owned by another player
-					// we set the second param to 2 + ownerTurnOrder to tell UI that the property is already owned by
-					// someone else
-					actions.get(actions.size() - 1).setParams(List.of(diceSum, 2 + owner.getTurnOrder()));
-					int rent = Spaces.getRent(game, diceSum);
-					if (hasEnoughMoney(currentPlayer, rent)) {
-						payTo(currentPlayer, owner, rent);
-						playerRepository.saveAll(List.of(currentPlayer, owner));
-						// the fourth parameter is to tell the UI whether the player is paying double rent
-						boolean isDoubleRent = Spaces.hasMonopoly(game,
-								  Spaces.getPropertyType(currentPlayer.getPosition())) &&
-								  Spaces.getPropertyType(currentPlayer.getPosition()) != PropertyType.UTILITY;
-						actions.add(new UiAction(UiActionType.PAY_TO,
-								  List.of((int) currentPlayer.getTurnOrder(), (int) owner.getTurnOrder(), rent,
-											 isDoubleRent ? 1 : 0)));
-
-					} else {
-						// player does not have enough money to pay the rent
-					}
-				} else {
-					// property is already owned by currentPlayer
-					// we set the second param to 1 to tell UI that the player already owns the property
-					actions.get(actions.size() - 1).setParams(List.of(diceSum, 1));
-				}
-				game.setState(isDoubleDice ? GameStep.RE_ROLL : GameStep.TURN_END);
-			}
+			handleLandOnProperty(game, actions, currentPlayer, diceSum, isDoubleDice);
 		} else {
 			// player does not land on a property
 			game.setState(isDoubleDice ? GameStep.RE_ROLL : GameStep.TURN_END);
@@ -203,12 +172,18 @@ public class GameEngine {
 
 		if (isDoubleDice) {
 			game.incrementDoubleDice();
-			int distance = diceRoll.get(0) + diceRoll.get(1);
+			int diceSum = diceRoll.get(0) + diceRoll.get(1);
 			currentPlayer.freeFromJail();
 			actions.add(new UiAction(UiActionType.JAIL_OUT, Collections.emptyList()));
-			advancePlayer(currentPlayer, distance);
-			actions.add(new UiAction(UiActionType.ADVANCE, List.of(distance)));
-			game.setState(GameStep.RE_ROLL);
+			advancePlayer(currentPlayer, diceSum);
+			actions.add(new UiAction(UiActionType.ADVANCE, List.of(diceSum)));
+			if (Spaces.isProperty(currentPlayer.getPosition())) {
+				// player lands on a property
+				handleLandOnProperty(game, actions, currentPlayer, diceSum, true);
+			} else {
+				// player does not land on a property
+				game.setState(GameStep.RE_ROLL);
+			}
 			gameRepository.save(game);
 			return new GameResponse(game.getState(), actions);
 		}
@@ -240,6 +215,41 @@ public class GameEngine {
 		game.setState(game.getDoubleDice() > 0 ? GameStep.RE_ROLL : GameStep.TURN_END);
 		gameRepository.save(game);
 		return new GameResponse(game.getState(), actions);
+	}
+
+	private void handleLandOnProperty(Game game, List<UiAction> actions, Player currentPlayer, Integer diceSum,
+												 boolean isDoubleDice) {
+		Player owner = game.getPropertyRegister().getOwner(currentPlayer.getPosition());
+		if (owner == null) {
+			// property is not owned
+			game.setState(GameStep.BUY_OR_AUCTION);
+		} else {
+			if (!owner.equals(currentPlayer)) {
+				// property is owned by another player
+				// we set the second param to 2 + ownerTurnOrder to tell UI that the property is already owned by
+				// someone else
+				actions.get(actions.size() - 1).setParams(List.of(diceSum, 2 + owner.getTurnOrder()));
+				int rent = Spaces.getRent(game, diceSum);
+				if (hasEnoughMoney(currentPlayer, rent)) {
+					payTo(currentPlayer, owner, rent);
+					playerRepository.saveAll(List.of(currentPlayer, owner));
+					// the fourth parameter is to tell the UI whether the player is paying double rent
+					boolean isDoubleRent = Spaces.hasMonopoly(game, Spaces.getPropertyType(currentPlayer.getPosition())) &&
+							  Spaces.getPropertyType(currentPlayer.getPosition()) != PropertyType.UTILITY;
+					actions.add(new UiAction(UiActionType.PAY_TO,
+							  List.of((int) currentPlayer.getTurnOrder(), (int) owner.getTurnOrder(), rent,
+										 isDoubleRent ? 1 : 0)));
+
+				} else {
+					// player does not have enough money to pay the rent
+				}
+			} else {
+				// property is already owned by currentPlayer
+				// we set the second param to 1 to tell UI that the player already owns the property
+				actions.get(actions.size() - 1).setParams(List.of(diceSum, 1));
+			}
+			game.setState(isDoubleDice ? GameStep.RE_ROLL : GameStep.TURN_END);
+		}
 	}
 
 	private GameResponse handleDoNotBuy(Game game) {
